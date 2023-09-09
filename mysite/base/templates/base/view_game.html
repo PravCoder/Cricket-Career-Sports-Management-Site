@@ -126,6 +126,9 @@
   <p>Date: {{game.day}}, {{game.month}}, {{gmae.year}}</p>
   <p>Time: {{game.time}}</p>
   <p>Overs: {{game.overs}}</p>
+
+  <h2>{{game.team1.name}}: {{game.get_batting1_score}}/{{game.get_bowling1_score}}</h2>
+  <h2>{{game.team2.name}}: {{game.get_batting2_score}}/{{game.get_bowling2_score}}</h2>
 </div>
 
 {% if game.completed == False %}

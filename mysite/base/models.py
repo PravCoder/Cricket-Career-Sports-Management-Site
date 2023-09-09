@@ -58,6 +58,38 @@ class Game(models.Model):
     current_bowler = models.OneToOneField("Player", related_name="current_bowler",on_delete=models.SET_NULL,null=True,blank=True,unique=False)
     # Statistics
     players_stats = models.ManyToManyField("PlayerGameStat", related_name="players_stats", blank=True)
+
+    @property
+    def get_batting1_score(self):
+        runs = 0
+        for stat in self.players_stats.all():
+            if stat.player in list(self.batting1_team.players.all()):
+                runs += stat.total_runs
+        return runs
+
+    @property
+    def get_batting2_score(self):
+        runs = 0
+        for stat in self.players_stats.all():
+            if stat.player in list(self.batting2_team.players.all()):
+                runs += stat.total_runs
+        return runs
+
+    @ property
+    def get_bowling1_score(self):
+        wickets = 0
+        for stat in self.players_stats.all():
+            if stat.player in list(self.bowling1_team.players.all()):
+                wickets += stat.wickets
+        return wickets
+
+    @property
+    def get_bowling2_score(self):
+        wickets = 0
+        for stat in self.players_stats.all():
+            if stat.player in list(self.bowling2_team.players.all()):
+                wickets += stat.wickets
+        return wickets
     
 class GameInvite(models.Model):
     from_team = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True, related_name="from_team")
