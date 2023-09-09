@@ -3,6 +3,16 @@ from django.shortcuts import redirect, render
 from .models import GameInvite, Player,Team,Game,TeamInvite, PlayerGameStat
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+import django
+"""
+['', '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python27.zip', '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7', '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-darwin', '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-mac', '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-mac/lib-scriptpackages', '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-tk', '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-old', '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-dynload', '/Library/Python/2.7/site-packages', '/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python', '/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/PyObjC']
+
+which python3:
+/opt/homebrew/bin/python3
+
+
+
+"""
 
 
 def logout_user(request):
@@ -23,7 +33,7 @@ def home(request):
     
     print("user team: " + str(user.team))
     if user.team == None:
-        team = Team.objects.create(name="filler", filler=True)  # creating filler-team-obj for new user with no team
+        team = Team.objects.create(name="filler", filler=True)  # creating filler-team-obj for new user with no tea
         user.team = team
         user.save()
         team.save()
