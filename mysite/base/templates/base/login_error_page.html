@@ -1,0 +1,44 @@
+{% extends 'main.html' %}
+{% load static %}
+
+
+{% block content %}
+<style>
+.error-body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.error-box {
+  max-width: 400px;
+  padding: 20px;
+  background-color: rgb(22, 187, 35);
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin: auto; /* Add this line */
+}
+</style>
+
+<div class="error-body">
+    <div class="error-box">
+        <h1>Login Required</h1>
+        <p class="error-message">You need to log in to view this page.</p>
+        <a href="{% url 'login' %}" class="login-button">Log In</a>
+    </div>
+</div>
+
+
+{% endblock %}

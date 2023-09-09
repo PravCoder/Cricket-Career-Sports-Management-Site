@@ -1,0 +1,99 @@
+{% extends 'main.html' %}
+
+
+{% block content %}
+<html>
+<head>
+<style>
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  background-color: #2196F3;
+  padding: 10px;
+}
+.grid-item {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
+}
+.center {
+  text-align: center;
+}
+table, th, td {
+  border: 1px solid;
+}
+table {
+  width: 70%;
+  empty-cells: show;
+}
+table.center {
+  margin-left: auto; 
+  margin-right: auto;
+}
+input[type=button], input[type=submit], input[type=reset] {
+  background-color: #04AA6D;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+{% if team.filler == False %}  <!-- if player is apart of a team -->
+<h1>{{team.name}}</h1>
+<h3>Captian: {{team.captain.username}}</h3>
+
+<div class="grid-container">
+    {% for p in players %}
+        <div class="grid-item">
+            <a href="{% url 'player-career' p.id %}">{{p.username}}</a>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="center">
+    <p>Statisics</p>
+</div>
+
+<table class="center">
+    <tr>
+      <th>Games</th>
+      <th>Won</th>
+      <th>Win%</th>
+      <th>Runs Ave</th>
+      <th>Wckts Ave</th>
+    </tr>
+    <tr>
+      <td>{{team.games_played}}</td>
+      <td>{{team.games_won}}</td>
+      <td>{{win_percentage}}</td>
+      <td>{{team.runs_average}}</td>
+      <td>{{team.wickets_average}}</td>
+    </tr>
+    <tr>
+    </tr>
+</table>
+
+<div>
+    <form method="POST" action="">  <!-- everytime form is submitted  it posts a query-dict {"input-name":"text-typed-in-input"} -->
+        {% csrf_token %}
+        Enter the username of player you want to invite to team.
+        <input type="text" name="username" placeholder="Enter username...">
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
+</body>
+</html>
+{% else %}
+<h3>You are not apart of a team yet!</h3>
+{% endif %}
+
+
+
+{% endblock %}

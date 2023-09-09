@@ -1,0 +1,482 @@
+from django.http import response
+from django.shortcuts import redirect, render
+from .models import GameInvite, Player,Team,Game,TeamInvite, PlayerGameStat
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+
+
+def logout_user(request):
+    if request.user.is_authenticated == True:
+        logout(request)
+        print("User has been logged out")
+    return redirect("home")
+
+def unauthorized(request):
+    context = {}
+    return render(request, "base/login_error_page.html", context)
+
+def home(request):
+    user = request.user
+    if user.is_authenticated == False:
+        context = {}
+        return render(request, "base/home.html", context)
+    
+    print("user team: " + str(user.team))
+    if user.team == None:
+        team = Team.objects.create(name="filler", filler=True)  # creating filler-team-obj for new user with no team
+        user.team = team
+        user.save()
+        team.save()
+
+    upcoming_games = []  # all games with completed=False
+    for g in user.games.all():
+        if g.completed == False:
+            upcoming_games.append(g)
+    invites = user.team_invites.all()
+    game_invites = user.game_invites.all()
+
+    team_accept = request.POST.get("Accept")  # accept-val = "team-id#invite-id"
+    team_decline = request.POST.get("Decline")
+    game_accept = request.POST.get("Accept Game")
+    game_decline = request.POST.get("Decline Game")
+    if request.method == "POST":
+        # IF PLAYER ACCEPTS TEAM INVITE ADD PLAYER TO THE TEAM
+        if team_accept:
+            arr = team_accept.split("#")
+            try:
+                prev_team = user.team
+            except:
+                prev_team = None
+            prev_team.players.remove(user)
+            t1 = Team.objects.get(id=int(arr[0]))
+            t1.players.add(user)
+            user.team = t1
+            user.save()
+            t1.save()
+            prev_team.save()
+            inv = TeamInvite.objects.get(id=int(arr[1]))
+            inv.delete()
+        # IF PLAYER DECLINES TEAM INVITE DELETE TEAM INVITE
+        if team_decline:
+            arr = team_decline.split("#")
+            inv = TeamInvite.objects.get(id=int(arr[1]))
+            inv.delete()
+        # IF TEAM ACCEPTS GAME INVITE CREATE GAME OBJECT
+        if game_accept:
+            # get the game invite and create game-object
+            inv = GameInvite.objects.get(id=game_accept)
+            game = Game.objects.create(team1=inv.from_team, team2=inv.to_team, year=inv.year,month=inv.month,day=inv.day,time=inv.time,location=inv.location,overs=inv.overs)
+            game.team1.games.add(game)
+            game.team2.games.add(game)
+            game.save()
+            # create stat-objects for each player in game
+            for player in game.team1.players.all():
+                stat_line = PlayerGameStat.objects.create(game=game, player=player)
+                game.players_stats.add(stat_line)
+            for player in game.team2.players.all():
+                stat_line = PlayerGameStat.objects.create(game=game, player=player)
+                game.players_stats.add(stat_line)
+            game.save()
+            print("Num stats: "+str(len(game.players_stats.all())))
+            # add the game to players.game attribute
+            for player in game.team1.players.all():
+                player.games.add(game)
+            for player in game.team2.players.all():
+                player.games.add(game)
+            player.save() 
+            inv.delete()
+        # IF TEAM DECLINES GAME INVITE DELETE INVITE
+        if game_decline:
+            inv = GameInvite.objects.get(id=game_decline)
+            inv.delete()
+
+    context = {"games":upcoming_games, "invites":invites, "game_invites":game_invites}
+    return render(request, "base/home.html", context)
+ 
+def player_career(request, pk):
+    player = Player.objects.get(id=pk)
+    if player.games_won == 0 or player.games_played == 0:
+        win_percentage = 0
+    else:
+        win_percentage = round(player.games_won/player.games_played *100)
+    context = {"pk":pk, "user":player, "win_percentage":win_percentage}
+    return render(request, "base/career.html", context)
+
+def team(request, pk):   # check is player doesn't have a team
+    user = request.user
+    try:
+        team = Team.objects.get(id=pk)
+    except:
+        team = Team.objects.create(name="filler", filler=True)  # creating filler-team-obj for new user with no team
+        user.team = team
+        user.save()
+        team.save()
+        context = {"players":None, "team":team}
+        return render(request, "base/team.html", context)
+
+    if request.method == "POST":
+        username = request.POST.get("username")
+        player = Player.objects.get(username=username)
+        team_invite = TeamInvite.objects.create(to_team=request.user.team)
+        player.team_invites.add(team_invite)
+        team_invite.save()
+
+    players = team.players
+    if team.games_played != 0 or team.games_played != 0:
+        win_percentage = round(team.games_won/team.games_played *100)
+    else:
+        win_percentage = 0
+    context = {"players":players.all(), "team":team, "win_percentage":win_percentage}
+    return render(request, "base/team.html", context)
+
+def create_team(request):
+    if request.method == "POST":
+        name = request.POST.get("team_name")
+        if name != None:
+            user = request.user
+            t1 = Team.objects.create(name=name, captain=request.user)
+            t1.players.add(user)
+            t1.captain = user
+            t1.save()
+            user.team = t1
+            user.save()
+            return redirect("team", t1.id)
+    context = {}
+    return render(request, "base/create_team.html", context)
+
+def game_history(request):
+    user = request.user
+    games = []
+    for g in user.games.all():
+        if g.doneStats == True:
+            games.append(g)
+    context = {"games":games}
+    return render(request, "base/game_history.html", context)
+
+def view_game(request, pk): # game.vids
+    print(request.POST) # if box is not checked its key/val pair will not show up in request.POST, and tis value is None
+    user = request.user
+    game = Game.objects.get(id=int(pk))
+
+    # IF A FORM WAS SUBMITTED
+    if request.method == "POST":
+        if request.POST.get("batted-first-innings") != None:   # filling with empty stat-objs
+            print("SETTING ORDER OF GAME: " + str(int(request.POST.get("batted-first-innings"))))
+            batted_first_innings_id = int(request.POST.get("batted-first-innings"))
+            if game.team1.id == batted_first_innings_id:
+                game.completed = True
+                game.batting1_team = game.team1 
+                game.bowling1_team = game.team2
+                game.batting2_team = game.team2
+                game.bowling2_team = game.team1
+                game.save()
+            if game.team2.id == batted_first_innings_id:   # filling with empty stat-objs
+                game.completed = True
+                game.batting1_team = game.team2
+                game.bowling1_team = game.team1
+                game.batting2_team = game.team1
+                game.bowling2_team = game.team2
+                game.save()
+        # THIS INFORMATION SHOULD BE EXTRACTED WHEN THE FIRST GAME INFO FORM IS SUBMITTED, AND WHEN EACH BALL IS SUBMITTED
+        if request.POST.get("on-strike") != None:
+            on_strike_batsman = Player.objects.get(id=int(request.POST.get("on-strike")))
+            game.on_strike_batsman = on_strike_batsman
+            onstrike_game_stat = on_strike_batsman.get_game_stat(game)
+        if request.POST.get("off-strike") != None:
+            off_strike_batsman = Player.objects.get(id=int(request.POST.get("off-strike")))
+            game.off_strike_batsman = off_strike_batsman
+            off_strike_batsman.get_game_stat(game)
+        if request.POST.get("current-bowler") != None:
+            current_bowler = Player.objects.get(id=int(request.POST.get("current-bowler")))
+            game.current_bowler = current_bowler
+            bowler_game_stat = current_bowler.get_game_stat(game)
+        game.save()
+
+
+        # BATSMAN SCORED RUNS BY HTTING
+        if request.POST.get("runs_scored") != None:         # TODO: update game stats/attributes
+            print("RUNS HITTED")
+            runs_scored = int(request.POST.get("runs_scored"))
+            # PLAYER STATS
+            onstrike_game_stat.runs_scored += runs_scored
+            onstrike_game_stat.balls_batted += 1
+            if runs_scored == 4:
+                onstrike_game_stat.fours += 1
+            if runs_scored == 6:
+                onstrike_game_stat.sixes += 1
+            
+            bowler_game_stat.balls_bowled += 1
+            bowler_game_stat.runs_given_up += runs_scored
+            onstrike_game_stat.save()
+            bowler_game_stat.save()
+            
+            # GAME STATS
+            if game.current_innings == 1:
+                game.batting_score1 += runs_scored
+            elif game.current_innings == 1:
+                game.batting_score2 += runs_scored
+            set_ball_icon(game, str(runs_scored))
+            increment_game(game)
+            game.save()
+        # BATSMAN SCORED RUNS BY RUNNING: 
+        if request.POST.get("runs_ran") != None:
+            print("RUNS RAN")
+            # PLAYER STATS
+            runs_ran = int(request.POST.get("runs_ran"))
+            onstrike_game_stat.runs_ran += runs_ran
+            onstrike_game_stat.balls_batted += 1
+            bowler_game_stat.runs_given_up += 1
+            bowler_game_stat.balls_bowled += 1 
+            onstrike_game_stat.save()
+            bowler_game_stat.save()
+            # GAME STATS
+            set_ball_icon(game, str(runs_ran))
+            increment_game(game)
+            if game.current_innings == 1:
+                game.batting_score1 += runs_ran
+            elif game.current_innings == 1:
+                game.batting_score2 += runs_ran
+            game.save()
+        # BOWLER GOT WICKET, WIDE, NO-BALL
+        if request.POST.get("other") != None:
+            outcome =  request.POST.get("other")
+            # PLAYER STATS
+            if "wicket" in outcome:
+                if outcome == "wicket-bowled":
+                    onstrike_game_stat.out_type = "bowled "+str(current_bowler.username)
+                if outcome == "wicket-lbw":
+                    onstrike_game_stat.out_type = "LBW "+str(current_bowler.username)
+                if outcome == "wicket-catch":
+                    fielder = Player.objects.get(id=int(request.POST.get("fielder")))  # TODO: select fielder who caught 
+                    fielder.catches += 1
+                    onstrike_game_stat.out_type = "bowled "+str(current_bowler.username)+", catch " +str(fielder.username)
+
+                bowler_game_stat.wickets += 1   
+                bowler_game_stat.balls_bowled += 1  
+                onstrike_game_stat.balls_batted += 1
+                onstrike_game_stat.out_ball = game.current_ball
+                onstrike_game_stat.out_over = game.current_over
+                bowler_game_stat.save()
+                onstrike_game_stat.save()
+                # GAME STATS
+                set_ball_icon(game, "W")
+                increment_game(game)
+                if game.current_innings == 1:
+                    game.bowling_score1 += 1
+                elif game.current_innings == 1:
+                    game.bowling_score2 += 1
+                game.save()
+            if outcome == "wide":       # do not update ball/over number
+                # PLAYER STATS
+                bowler_game_stat.extras += 1
+                bowler_game_stat.save()
+            if outcome == "no-ball":         # do not update ball/over number
+                bowler_game_stat.extras += 1
+                bowler_game_stat.save()
+
+         # IF GAME HAS BEEN STARTED
+        if game.completed == False:
+            print("GAME COMPLETED IS FALSE")
+            context = {"game":game}
+            return render(request, "base/view_game.html", context)
+
+        context = {"game":game}
+        return render(request, "base/view_game.html", context)
+    
+    context = {"game":game}
+    return render(request, "base/view_game.html", context)
+    
+
+def increment_game(game):
+    if game.current_ball < 6:
+        game.current_ball += 1
+        game.save()
+        return 
+    if game.current_ball == 6:
+        print("6TH BALL")
+        if game.current_over < game.overs:
+            game.current_ball = 1 
+            print("INCREMENT OVER")
+            game.current_over += 1
+            reset_over_icons(game)
+            game.save()
+            return
+        if game.current_over == game.overs:
+            print("GAME END")
+            game.save()
+            return
+    
+def set_ball_icon(game, outcome):
+    print("SET BALL ICON")
+    if game.current_ball == 1:
+        game.ball1 = outcome
+    if game.current_ball == 2:
+        game.ball2 = outcome
+    if game.current_ball == 3:
+        game.ball3 = outcome
+    if game.current_ball == 4:
+        game.ball4 = outcome
+    if game.current_ball == 5:
+        game.ball5 = outcome
+    if game.current_ball == 6:
+        game.ball6 = outcome
+    game.save()
+def reset_over_icons(game):
+    print("RESETTING OVER ICONS")
+    game.ball1 = "None"
+    game.ball2 = "None"
+    game.ball3 = "None"
+    game.ball4 = "None"
+    game.ball5 = "None"
+    game.ball6 = "None"
+    game.save()
+
+
+def schedule_game(request):
+    user = request.user
+    if request.method == "POST":
+        opp_team = request.POST.get("opp-team")
+        location = request.POST.get("address")
+        year = request.POST.get("year")
+        month = request.POST.get("month")
+        day = request.POST.get("day")
+        time = request.POST.get("time")
+        overs = request.POST.get("overs")
+        if opp_team != None and location != None and year != None and month != None and day != None and time != None:
+            team2 = Team.objects.get(name=opp_team)
+            invite = GameInvite.objects.create(from_team=user.team, to_team=team2, year=year,month=month,day=day,time=time,location=location,overs=overs)
+            invite.save()
+            for player in team2.players.all():
+                player.game_invites.add(invite)
+                player.save()
+        return redirect("home")
+    context = {}
+    return render(request, "base/schedule_game.html", context)
+
+def login_page(request):
+    page = "login"
+    if request.method == "POST":
+        email = request.POST.get("email").lower()
+        password = request.POST.get("password")
+        try:
+            user = Player.objects.get(email=email)
+        except:
+            messages.error(request, "User no exist")
+
+        if user is not None:
+            login(request, user)
+            return redirect("home") 
+        else:
+            print(user)
+            messages.error(request, "Wrong info")
+
+    context = {"page":page}
+    return render(request, "base/login_register.html", context)
+
+def register_page(request):
+    page = "register"
+    if request.method == "POST":
+        first = request.POST.get("first-name")
+        last = request.POST.get("last-name")
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        password1 = request.POST.get("password1")
+        password2 = request.POST.get("password2")
+        if first != None and last != None and username != None and email != None and password1 != None and password2 != None and password1==password2:
+            user= Player.objects.create(first_name=first,last_name=last,username=username.lower(),email=email,password=password1)
+            team = Team.objects.create(name="filler", filler=True)  # creating filler-team-obj for new user with no team
+            team.filler = True
+            user.team = team
+            user.save()
+            team.save()
+            login(request, user)
+            return redirect("home")
+        else:
+            messages.error(request, "An error has occured during registration")
+    context = {"page":page}
+    return render(request, "base/login_register.html", context)
+
+
+
+
+# FEATURES TO IMPLEMENT & IMPROVEMENTS:
+# () -When game is deleted delete the cooresponding 
+# (*)- Update career stats after game is finished by itereating through the game players stat objects.
+# (*)- Temporary + long term teams
+# (*)- Create an organization which stores multiple teams. 
+# (*)- A temporary team for 1 game, and a team object for multiple games.
+# ()- Group chat and messaging of current team
+# ()- Download scorecard of game as pdf
+# ()- Social media posts
+# ()- User profile pictures, team profile pictures
+# ()- Search functionality players, teams, posts, serach for teams then invite them instead of having to type their name
+# (*)- Ball by ball stat entering
+# ()- Tap on searched team to send game invite
+# ()- Tap on searched player to send team invite
+# ()- Discard a team with 1 click. Singular player leaves team with 1 click. 
+
+# BUGS FIXED: 
+# - over is restting at 5th ball
+# - Stats of players in view game not rendering even though attributes are set, maybe because of CSS.
+# - Runs scored submission is adding double runs that are hit
+
+# BUGS TO FIX:
+
+# - Incorrect authentication credentials catch
+# - If user checks multiple boxes in stat scoring.
+# - Only players apart of current team can invite other players
+
+# NOTES:
+# Inprogress game: http://127.0.0.1:8000/view-game/25
+
+#-------------------------------------
+# START SCORING:
+# -iterate through number of balls for each inning (display the actions for that ball) and allow user to enter outcome for each ball.
+# -based on the outcome for each ball update the stats for all involved players.
+# -when user enters stat scoring they have to choose the current batsman 
+
+# SCORING DISPLAY FRONTEND:
+# -display current batsman on strike
+# -display current bowler for that over
+# -square boxes for each ball and icons representing the outcome for each ball, blank if ball hasn't been played yet
+# -wicket button clicked and drops down user chooses the type of out 
+# -after each ball they have set the striking/nonstriking batsman if they changed
+
+# SCORING BACKEND LOGIC:
+# -If runs were scored either through hitting or running:
+#   ~get the current ball and update its runs attribute
+#   ~ move to nxt ball
+# -If wicket was taken:
+#   ~get the current ball and update its wickets attribute
+#   ~move to next ball
+# -After a ball concludes:
+#   ~set career stats 
+# -Update career stats after game:
+#   ~iterate though each over and each ball and get updat ehte runs and wickets and balls of each batsman/bowler
+#
+
+# Ball: (these attributes are relative to the cur)
+# -number = Int. 1-->6 number of ball in over
+# -runs_scored = Int. 0(dot_ball),4,6
+# -runs_ran = Int. 0(dot_ball),1,2,3,4,5...inf
+# -wicket = Bool. true, false
+# -wicket_type = Str. "lbw","stumping","run out","bowled","caught"
+# -extras = Int. 0,1,2,3
+# -on_strike_batsman = <Player>
+# -non_strike_batsman = <Player>
+# -bowler = <Player>
+# -conclusion_statement = Str. "3 runs scored by Prav". "Prav bowled by Sanjay"
+# -ball_pitch = Str. "legside", "offside", "straight"
+# -ball_hit = Str. "slip","wicket","fine leg","square leg","mid wicket","mid on","mid off","extra cover","cover","point","gully","third man"
+
+# Over:
+# -balls = <Balls.Many>
+# -bowler = <Player>. When over is created set to null, when this over is reached user is prompted to set the bowler from drop down.
+# -number = Int. 1-->num of overs in innings
+# -current_ball = Int. Number of the ball in current over in current innings 
+# -innings_num = Int. Either 1 or 2
+
+# Game:
+# -overs = <Over.Many>
+# -current_over = Int. Number of the over in current innings
+# -current_innings = Int. 1 or 2

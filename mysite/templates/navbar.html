@@ -1,0 +1,82 @@
+
+<style>
+/* Navigation bar styles */
+body, ul {
+      margin: 0;
+      padding: 0;
+    }
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgb(22, 144, 56);
+  color: #41ce37;
+  padding: 30px 20px;
+}
+
+.navbar-logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-link {
+  margin-right: 20px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.navbar-profile {
+  display: flex;
+  align-items: center;
+}
+
+.profile-picture {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 10px;
+}
+
+.picture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+</style>
+
+{% if request.user.is_authenticated == True %}
+<nav class="navbar">
+  <a class="active" href="{% url 'home' %}" class="navbar-link">Home</a>
+  <div class="navbar-links">
+    <a href="{% url 'player-career' request.user.id %}" class="navbar-link">Career</a>
+    <a href="{% url 'game-history' %}" class="navbar-link">GameHistory</a></li>
+    <a href="{% url 'team' request.user.team.id %}" class="navbar-link">MyTeam</a>  <!-- parameter is team id or none-->
+    <a href="{% url 'create-team' %}" class="navbar-link">Create Team</a>
+    <a href="{% url 'schedule-game' %}" class="navbar-link">Schedule Game</a>
+    <a href="{% url 'login' %}" class="navbar-link">Login/Register</a>
+    <a href="{% url 'logout' %}"class="navbar-link">Logout</a>
+  </div>
+</nav>
+{% elif request.user.is_authenticated  == False %}
+<nav class="navbar">
+  <a class="active" href="{% url 'unauthorized' %}" class="navbar-link">Home</a>
+  <div class="navbar-links">
+    <a href="{% url 'unauthorized' %}" class="navbar-link">Career</a>
+    <a href="{% url 'unauthorized' %}" class="navbar-link">GameHistory</a>
+    <a href="{% url 'unauthorized' %}" class="navbar-link">MyTeam</a>  <!-- parameter is team id or none-->
+    <a href="{% url 'unauthorized' %}" class="navbar-link">Create Team</a>
+    <a href="{% url 'unauthorized' %}" class="navbar-link">Schedule Game</a>
+    <a href="{% url 'login' %}" class="navbar-link">Login/Register</a>
+  </div>
+</nav>
+{% endif %}
+
+<h2>Welcome, {{request.user.username}}</h2>
+

@@ -1,0 +1,93 @@
+{% extends 'main.html' %}
+
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.center {
+  text-align: center;
+}
+table, th, td {
+  border: 1px solid;
+}
+table {
+  width: 80%;
+  empty-cells: show;
+}
+table.center {
+  margin-left: auto; 
+  margin-right: auto;
+}
+</style>
+</head>
+<body>
+<h1 class="center">{{user.first_name}} {{user.last_name}}'s Career</h1>
+
+<h3></h3>
+<div class="center">
+    <p>Batting & Fielding</p>
+</div>
+
+<table class="center">
+  <tr>
+    <th>Mat Played</th>
+    <th>Mat Won</th>
+    <th>Win%</th>
+    <th>Runs</th>
+    <th>4's</th>
+    <th>6's</th>
+    <th>50</th>
+    <th>HS</th>
+    <th>4's HS</th>
+    <th>6's HS</th>
+    <th>Ave</th>
+    <th>Balls</th>
+    <th>Catches</th>
+  </tr>
+  <tr>
+    <td>{{user.games_played}}</td>
+    <td>{{user.games_won}}</td>
+    <td>{{win_percentage}}</td>
+    <td>{{user.runs}}</td>
+    <td>{{user.fours}}</td>
+    <td>{{user.sixes}}</td>
+    <td>{{user.fifties}}</td>
+    <td>{{user.runs_hs}}</td>
+    <td>{{user.fours_hs}}</td>
+    <td>{{user.sixes_hs}}</td>
+    <td>{{user.runs_average}}</td>
+    <td>{{user.balls_played}}</td>
+    <td>{{user.catches}}</td>
+  </tr>
+  <tr>
+  </tr>
+</table>
+
+<div class="center">
+    <p>Bowling</p>
+</div>
+
+<table class="center">
+    <tr>
+      <th>Wkts</th>
+      <th>Balls</th>
+      <th>Ave Wkts</th>
+      <th>HS Wkts</th>
+    </tr>
+    <tr>
+      <td>{{user.wickets}}</td>
+      <td>{{user.balls_bowled}}</td>
+      <td>{{user.wickets_average}}</td>
+      <td>{{user.wickets_hs}}</td>
+    </tr>
+    <tr>
+    </tr>
+</table>
+
+</body>
+</html>
+
+
+{% endblock %}

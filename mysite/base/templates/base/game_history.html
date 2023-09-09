@@ -1,0 +1,48 @@
+{% extends 'main.html' %}
+
+
+{% block content%}
+<style>
+ .card {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  width: 40%;
+  margin-left: auto; 
+  margin-right: auto;
+}
+.center {
+  text-align: center;
+}
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 255, 0, 1);
+}
+
+.container {
+  padding: 2px 16px;
+  color: black;
+}
+input[type=button], input[type=submit], input[type=reset] {
+      background-color: #04AA6D;
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      text-decoration: none;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+</style>
+
+<h1 class="center">Match History</h1>
+
+{% for game in games %}
+    <a href="{% url 'view-game' game.id %}">
+      <div class="card">
+          <div class="container">
+                  <h4>{{game.team1.name}} vs. {{game.team2.name}}</h4>
+                  <h5>{{game.day}}, {{game.month}}, {{game.year}}</h5>
+          </div>
+      </div>
+    </a>
+{% endfor %}
+
+{% endblock %}

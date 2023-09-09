@@ -1,0 +1,445 @@
+{% extends 'main.html' %}
+
+
+{% block content %}
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enter Match Stats</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+      background-color: #1da1f2;
+      color: white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .game-info {
+      background-color: #f1f1f1;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .innings {
+      display: flex;
+      flex-direction: column; /* Stack sections vertically */
+      margin: 20px auto;
+      width: 80%;
+    }
+
+    .innings-section {
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+      width: 100%; /* Full width within the container */
+      margin-bottom: 20px;
+    }
+
+    .stat-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    .stat-table th,
+    .stat-table td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+
+    .ball-boxes {
+      display: flex;
+      flex-direction: row; /* Arrange ball boxes in a row */
+      justify-content: space-between;
+      width: 80%;
+      margin: 0 auto;
+      margin-top: 20px;
+    }
+
+    .ball-box {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      width: 14%;
+      padding: 10px;
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .outcome-buttons {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      margin-right: 15px;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+      margin-right: 5px;
+    }
+
+    .bowler-selector {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    select {
+      padding: 5px;
+    }
+
+    .submit-button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #1da1f2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Enter Match Stats</h1>
+</div>
+<div class="game-info">
+  <h2>Game Information</h2>
+  <p>Teams: {{game.team1.name}} vs {{game.team2.name}}</p>
+  <p>Location: {{game.location}}</p>
+  <p>Date: {{game.day}}, {{game.month}}, {{gmae.year}}</p>
+  <p>Time: {{game.time}}</p>
+  <p>Overs: {{game.overs}}</p>
+</div>
+
+{% if game.completed == False %}
+<div>
+  <form action="" method="POST">
+    {% csrf_token %}
+    <label>Who is batting in the first innings?</label>
+    <select name="batted-first-innings">
+      <option value="{{game.team1.id}}">{{game.team1.name}}</option>
+      <option value="{{game.team2.id}}">{{game.team2.name}}</option>
+    </select>
+
+    <!--CURRENT BOWLER SELECTOR-->
+    <div class="bowler-selector">
+      <label for="current-bowler">Select Current Bowler:</label>
+      <select id="current-bowler" name="current-bowler">
+        <option value="{{game.current_bowler.id}}">{{current_bowler.username}}</option> <!-- first option is the current player-->
+        {% for player in game.team1.players.all %}
+          <option value="{{player.id}}">{{player.username}}</option>
+        {% endfor %}
+        {% for player in game.team2.players.all %}
+          <option value="{{player.id}}">{{player.username}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <!--ON STRIKE BATSMAN SELECTOR-->
+    <div class="bowler-selector">
+      <label for="on-strike">On Strike Batsman:</label>
+      <select id="on-strike" name="on-strike">
+        <option value="{{game.on_strike_batsman.id}}">{{on_strike_batsman.username}}</option>
+        {% for player in game.team1.players.all %}
+          <option value="{{player.id}}">{{player.username}}</option>
+        {% endfor %}
+        {% for player in game.team2.players.all %}
+          <option value="{{player.id}}">{{player.username}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <!--OFF STRIKE BATSMAN SELECTOR-->
+    <div class="bowler-selector">
+      <label for="off-strike">Off Strike Batsman:</label>
+      <select id="off-strike" name="off-strike">
+        <option value="{{game.off_strike_batsman.id}}">{{off_strike_batsman.username}}</option>
+        {% for player in game.team1.players.all %}
+          <option value="{{player.id}}">{{player.username}}</option>
+        {% endfor %}
+        {% for player in game.team2.players.all %}
+          <option value="{{player.id}}">{{player.username}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <input type="submit" value="Submit">
+  </form>
+</div>
+{% else %}
+
+
+
+<!--FIRST INNINGS-->
+<div class="innings">
+  <div class="innings-section">
+    <h2>First Innings</h2>
+    <!-- BATTING FIRST INNINGS-->
+    <h3>Batting</h3>
+    <table class="stat-table">
+        <tr>
+          <th>Player</th>
+          <th>Runs</th>
+          <th>Fours</th>
+          <th>Sixes</th>
+          <th>Balls</th>
+          <th>Out</th>
+        </tr>
+      <tbody>
+        {% for player in game.batting1_team.players.all %}
+          {% for stat in game.players_stats.all %}
+            {% if player == stat.player %}
+              <tr>
+                <td>{{player.username}}</td>
+                <td>{{stat.total_runs}}</td>
+                <td>{{stat.fours}}</td>
+                <td>{{stat.sixes}}</td>
+                <td>{{stat.balls_batted}}</td>
+                <td>{{stat.out_type}}</td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      </tbody>
+    </table>
+    <!--BOWLING FIRST INNINGS-->
+    <h3>Bowling</h3>
+    <table class="stat-table">
+        <tr>
+          <th>Player</th>
+          <th>Wickets</th>
+          <th>Balls</th>
+          <th>Runs Given</th>
+        </tr>
+      <tbody>
+        {% for player in game.bowling1_team.players.all %}
+          {% for stat in game.players_stats.all %}
+            {% if player == stat.player %}
+              <tr>
+                <td>{{player.username}}</td>
+                <td>{{stat.wickets}}</td>
+                <td>{{stat.balls_bowled}}</td>
+                <td>{{stat.runs_given_up}}</td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+
+
+
+
+  <!--SECOND INNINGS-->
+<div class="innings">
+  <div class="innings-section">
+    <h2>Second Innings</h2>
+    <!-- BATTING SECOND INNINGS-->
+    <h3>Batting</h3>
+    <table class="stat-table">
+        <tr>
+          <th>Player</th>
+          <th>Runs</th>
+          <th>Fours</th>
+          <th>Sixes</th>
+          <th>Balls</th>
+          <th>Out</th>
+        </tr>
+      <tbody>
+        {% for player in game.batting2_team.players.all %}
+          {% for stat in game.players_stats.all %}
+            {% if player == stat.player %}
+              <tr>
+                <td>{{player.username}}</td>
+                <td>{{stat.total_runs}}</td>
+                <td>{{stat.fours}}</td>
+                <td>{{stat.sixes}}</td>
+                <td>{{stat.balls_batted}}</td>
+                <td>{{stat.out_type}}</td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      </tbody>
+    </table>
+    <!--BOWLING SECOND INNINGS-->
+    <h3>Bowling</h3>
+    <table class="stat-table">
+        <tr>
+          <th>Player</th>
+          <th>Wickets</th>
+          <th>Balls</th>
+          <th>Runs Given</th>
+        </tr>
+      <tbody>
+        {% for player in game.bowling2_team.players.all %}
+          {% for stat in game.players_stats.all %}
+            {% if player == stat.player %}
+              <tr>
+                <td>{{player.username}}</td>
+                <td>{{stat.wickets}}</td>
+                <td>{{stat.balls_bowled}}</td>
+                <td>{{stat.runs_given_up}}</td>
+               </tr>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="ball-boxes">
+    <div class="ball-box">{{game.ball1}}</div>
+    <div class="ball-box">{{game.ball2}}</div>
+    <div class="ball-box">{{game.ball3}}</div>
+    <div class="ball-box">{{game.ball4}}</div>
+    <div class="ball-box">{{game.ball5}}</div>
+    <div class="ball-box">{{game.ball6}}</div>
+  </div>
+
+  
+
+  <form action="" method="POST">
+    {% csrf_token %}
+    <div class="outcome-buttons">
+      <h4>Current Innings: {{game.current_innings}}         Current Over: {{game.current_over}}      Current Ball: {{game.current_ball}}</h4>
+
+    </div>
+    <div class="outcome-buttons">
+      <h4>Runs Hit:</h4>
+      <label class="checkbox-label">
+        <input type="checkbox" name="runs_scored" value="4">4
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="runs_scored" value="6">6
+      </label>
+    </div>
+    <div class="outcome-buttons">
+      <h4>Runs Rans:</h4>
+      <label class="checkbox-label">
+          <input type="checkbox" name="runs_ran" value="0">0
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="runs_ran" value="1">1
+    </label>
+      <label class="checkbox-label">
+          <input type="checkbox" name="runs_ran" value="2">2
+      </label>
+      <label class="checkbox-label">
+          <input type="checkbox" name="runs_ran" value="3">3
+      </label>
+      <label class="checkbox-label">
+          <input type="checkbox" name="runs_ran" value="4">4
+      </label>
+      <label class="checkbox-label">
+          <input type="checkbox" name="runs_ran" value="5">5
+      </label>
+    </div>
+    <div class="outcome-buttons">
+      <h4>Other:</h4>
+      <label class="checkbox-label">
+          <input type="checkbox" name="other" value="wicket-bowled">Wicket Bowled
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="other" value="wicket-lbw">Wicket LBW
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="other" value="wicket-catch">Wicket Catch
+      </label>
+      <!--FIELDER WICKET SELECTOR-->
+      <div class="bowler-selector">
+        <label for="current-bowler">Select Fielder:</label>
+        <select id="fielder" name="fielder">
+          {% if game.current_innings == 1 %}
+            {% for player in game.bowling1_team.players.all %}
+              <option value="{{player.id}}">{{player.username}}</option>
+            {% endfor %}
+          {% else %}
+              {% for player in game.bowling2_team.players.all %}
+                <option value="{{player.id}}">{{player.username}}</option>
+              {% endfor %}
+          {% endif %}
+        </select>
+      </div>
+      <label class="checkbox-label">
+          <input type="checkbox" name="other" value="wide">Wide
+      </label>
+      <label class="checkbox-label">
+          <input type="checkbox" name="other" value="no-ball">No-Ball
+      </label>
+    </div>
+      <!--CURRENT BOWLER SELECTOR-->
+      <div class="bowler-selector">
+        <label for="current-bowler">Select Current Bowler:</label>
+        <select id="current-bowler" name="current-bowler">
+          <option value="{{game.current_bowler.id}}">{{game.current_bowler.username}}</option> <!-- first option is the current player-->
+          {% if game.current_innings == 1 %}
+            {% for player in game.bowling1_team.players.all %}
+              <option value="{{player.id}}">{{player.username}}</option>
+            {% endfor %}
+          {% else %}
+              {% for player in game.bowling2_team.players.all %}
+                <option value="{{player.id}}">{{player.username}}</option>
+              {% endfor %}
+          {% endif %}
+        </select>
+      </div>
+      <!--ON STRIKE BATSMAN SELECTOR-->
+      <div class="bowler-selector">
+        <label for="on-strike">On Strike Batsman:</label>
+        <select id="on-strike" name="on-strike">
+          <option value="{{game.on_strike_batsman.id}}">{{game.on_strike_batsman.username}}</option>
+          {% if game.current_innings == 1 %}
+            {% for player in game.batting1_team.players.all %}
+              <option value="{{player.id}}">{{player.username}}</option>
+            {% endfor %}
+          {% else %}
+            {% for player in game.batting2_team.players.all %}
+              <option value="{{player.id}}">{{player.username}}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+      </div>
+      <!--OFF STRIKE BATSMAN SELECTOR-->
+      <div class="bowler-selector">
+        <label for="off-strike">Off Strike Batsman:</label>
+        <select id="off-strike" name="off-strike">
+          <option value="{{game.off_strike_batsman.id}}">{{game.off_strike_batsman.username}}</option>
+          {% if game.current_innings == 1 %}
+            {% for player in game.batting1_team.players.all %}
+              <option value="{{player.id}}">{{player.username}}</option>
+            {% endfor %}
+          {% else %}
+            {% for player in game.batting2_team.players.all %}
+              <option value="{{player.id}}">{{player.username}}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+      </div>
+
+    <button class="submit-button" type="submit">Submit Ball</button>
+  </form>
+</div>
+
+</body>
+</html>
+{% endif %}
+
+
+{% endblock %}
