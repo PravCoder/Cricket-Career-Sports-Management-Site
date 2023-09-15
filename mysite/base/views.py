@@ -307,9 +307,16 @@ def increment_game(game):
             reset_over_icons(game)
             game.save()
             return
-        if game.current_over == game.overs:     # if its the last ball and over game is over
+        if game.current_over == game.overs and game.current_innings == 2:     # if its the last ball and over game is over
             print("GAME END")
             game.doneStats = True # concludes stat entering of game-object
+            game.save()
+            return
+        if game.current_over == game.overs and game.current_innings == 1:     # if its the last ball and over game is over
+            print("INNINGS 1 END")
+            game.current_innings = 2
+            game.current_ball = 1
+            reset_over_icons(game)
             game.save()
             return
     
