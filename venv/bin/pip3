@@ -1,4 +1,4 @@
-#!/Users/pravachanpatra/Documents/PYTHON/DjangoApps/CricketCareer/venv/bin/python3
+#!/Users/pravachanpatra/Documents/PYTHON/DjangoApps/CricketCareerSportsManagementSite/venv/bin/python3.11
 # -*- coding: utf-8 -*-
 import re
 import sys
