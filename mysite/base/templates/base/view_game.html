@@ -112,6 +112,16 @@
       border-radius: 6px;
       cursor: pointer;
     }
+    .done-button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #1da1f2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -127,11 +137,17 @@
   <p>Time: {{game.time}}</p>
   <p>Overs: {{game.overs}}</p>
 
-  <h2>{{game.team1.name}}: {{game.get_batting1_score}}/{{game.get_bowling1_score}}</h2>
-  <h2>{{game.team2.name}}: {{game.get_batting2_score}}/{{game.get_bowling2_score}}</h2>
+  {% if game.entering_stats == True %}
+    <h2>{{game.team1.name}}: {{game.get_batting1_score}}/{{game.get_bowling1_score}}</h2>
+    <h2>{{game.team2.name}}: {{game.get_batting2_score}}/{{game.get_bowling2_score}}</h2>
+  {% endif %}
+  {% if game.entering_stats == False %}
+    <h2>{{game.team1.name}}: 0/0</h2>
+    <h2>{{game.team2.name}}: 0/0</h2>
+  {% endif %}
 </div>
 
-{% if game.completed == False %}
+{% if game.entering_stats == False and game.doneStats == False %}
 <div>
   <form action="" method="POST">
     {% csrf_token %}
@@ -183,9 +199,11 @@
     <input type="submit" value="Submit">
   </form>
 </div>
-{% else %}
+{% endif %}
 
 
+<!-- if gmae is at stage where we recieved the initalize game-info and are entering stats-->
+{% if game.entering_stats == True %}
 
 <!--FIRST INNINGS-->
 <div class="innings">
@@ -247,8 +265,6 @@
 
 
 
-
-
   <!--SECOND INNINGS-->
 <div class="innings">
   <div class="innings-section">
@@ -307,142 +323,153 @@
     </table>
   </div>
   
-  <div class="ball-boxes">
-    <div class="ball-box">{{game.ball1}}</div>
-    <div class="ball-box">{{game.ball2}}</div>
-    <div class="ball-box">{{game.ball3}}</div>
-    <div class="ball-box">{{game.ball4}}</div>
-    <div class="ball-box">{{game.ball5}}</div>
-    <div class="ball-box">{{game.ball6}}</div>
-  </div>
 
-  
-
-  <form action="" method="POST">
-    {% csrf_token %}
-    <div class="outcome-buttons">
-      <h4>Current Innings: {{game.current_innings}}         Current Over: {{game.current_over}}      Current Ball: {{game.current_ball}}</h4>
-
-    </div>
-    <div class="outcome-buttons">
-      <h4>Runs Hit:</h4>
-      <label class="checkbox-label">
-        <input type="checkbox" name="runs_scored" value="4">4
-      </label>
-      <label class="checkbox-label">
-        <input type="checkbox" name="runs_scored" value="6">6
-      </label>
-    </div>
-    <div class="outcome-buttons">
-      <h4>Runs Rans:</h4>
-      <label class="checkbox-label">
-          <input type="checkbox" name="runs_ran" value="0">0
-      </label>
-      <label class="checkbox-label">
-        <input type="checkbox" name="runs_ran" value="1">1
-    </label>
-      <label class="checkbox-label">
-          <input type="checkbox" name="runs_ran" value="2">2
-      </label>
-      <label class="checkbox-label">
-          <input type="checkbox" name="runs_ran" value="3">3
-      </label>
-      <label class="checkbox-label">
-          <input type="checkbox" name="runs_ran" value="4">4
-      </label>
-      <label class="checkbox-label">
-          <input type="checkbox" name="runs_ran" value="5">5
-      </label>
-    </div>
-    <div class="outcome-buttons">
-      <h4>Other:</h4>
-      <label class="checkbox-label">
-          <input type="checkbox" name="other" value="wicket-bowled">Wicket Bowled
-      </label>
-      <label class="checkbox-label">
-        <input type="checkbox" name="other" value="wicket-lbw">Wicket LBW
-      </label>
-      <label class="checkbox-label">
-        <input type="checkbox" name="other" value="wicket-catch">Wicket Catch
-      </label>
-      <!--FIELDER WICKET SELECTOR-->
-      <div class="bowler-selector">
-        <label for="current-bowler">Select Fielder:</label>
-        <select id="fielder" name="fielder">
-          {% if game.current_innings == 1 %}
-            {% for player in game.bowling1_team.players.all %}
-              <option value="{{player.id}}">{{player.username}}</option>
-            {% endfor %}
-          {% else %}
-              {% for player in game.bowling2_team.players.all %}
-                <option value="{{player.id}}">{{player.username}}</option>
-              {% endfor %}
-          {% endif %}
-        </select>
-      </div>
-      <label class="checkbox-label">
-          <input type="checkbox" name="other" value="wide">Wide
-      </label>
-      <label class="checkbox-label">
-          <input type="checkbox" name="other" value="no-ball">No-Ball
-      </label>
-    </div>
-      <!--CURRENT BOWLER SELECTOR-->
-      <div class="bowler-selector">
-        <label for="current-bowler">Select Current Bowler:</label>
-        <select id="current-bowler" name="current-bowler">
-          <option value="{{game.current_bowler.id}}">{{game.current_bowler.username}}</option> <!-- first option is the current player-->
-          {% if game.current_innings == 1 %}
-            {% for player in game.bowling1_team.players.all %}
-              <option value="{{player.id}}">{{player.username}}</option>
-            {% endfor %}
-          {% else %}
-              {% for player in game.bowling2_team.players.all %}
-                <option value="{{player.id}}">{{player.username}}</option>
-              {% endfor %}
-          {% endif %}
-        </select>
-      </div>
-      <!--ON STRIKE BATSMAN SELECTOR-->
-      <div class="bowler-selector">
-        <label for="on-strike">On Strike Batsman:</label>
-        <select id="on-strike" name="on-strike">
-          <option value="{{game.on_strike_batsman.id}}">{{game.on_strike_batsman.username}}</option>
-          {% if game.current_innings == 1 %}
-            {% for player in game.batting1_team.players.all %}
-              <option value="{{player.id}}">{{player.username}}</option>
-            {% endfor %}
-          {% else %}
-            {% for player in game.batting2_team.players.all %}
-              <option value="{{player.id}}">{{player.username}}</option>
-            {% endfor %}
-          {% endif %}
-        </select>
-      </div>
-      <!--OFF STRIKE BATSMAN SELECTOR-->
-      <div class="bowler-selector">
-        <label for="off-strike">Off Strike Batsman:</label>
-        <select id="off-strike" name="off-strike">
-          <option value="{{game.off_strike_batsman.id}}">{{game.off_strike_batsman.username}}</option>
-          {% if game.current_innings == 1 %}
-            {% for player in game.batting1_team.players.all %}
-              <option value="{{player.id}}">{{player.username}}</option>
-            {% endfor %}
-          {% else %}
-            {% for player in game.batting2_team.players.all %}
-              <option value="{{player.id}}">{{player.username}}</option>
-            {% endfor %}
-          {% endif %}
-        </select>
-      </div>
-
-    <button class="submit-button" type="submit">Submit Ball</button>
-  </form>
 </div>
-
-</body>
-</html>
 {% endif %}
 
+<!-- if game is at stage where we havent finished entering stats but we started entering stats-->
+{% if game.archived == False and game.entering_stats == True %}
+    <div class="ball-boxes">
+      <div class="ball-box">{{game.ball1}}</div>
+      <div class="ball-box">{{game.ball2}}</div>
+      <div class="ball-box">{{game.ball3}}</div>
+      <div class="ball-box">{{game.ball4}}</div>
+      <div class="ball-box">{{game.ball5}}</div>
+      <div class="ball-box">{{game.ball6}}</div>
+    </div>
+
+    <form action="" method="POST">
+      {% csrf_token %}
+      <div class="outcome-buttons">
+        <h4>Current Innings: {{game.current_innings}}         Current Over: {{game.current_over}}      Current Ball: {{game.current_ball}}</h4>
+
+      </div>
+      <div class="outcome-buttons">
+        <h4>Runs Hit:</h4>
+        <label class="checkbox-label">
+          <input type="checkbox" name="runs_scored" value="4">4
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" name="runs_scored" value="6">6
+        </label>
+      </div>
+      <div class="outcome-buttons">
+        <h4>Runs Ran:</h4>
+        <label class="checkbox-label">
+            <input type="checkbox" name="runs_ran" value="0">0
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" name="runs_ran" value="1">1
+      </label>
+        <label class="checkbox-label">
+            <input type="checkbox" name="runs_ran" value="2">2
+        </label>
+        <label class="checkbox-label">
+            <input type="checkbox" name="runs_ran" value="3">3
+        </label>
+        <label class="checkbox-label">
+            <input type="checkbox" name="runs_ran" value="4">4
+        </label>
+        <label class="checkbox-label">
+            <input type="checkbox" name="runs_ran" value="5">5
+        </label>
+      </div>
+      <div class="outcome-buttons">
+        <h4>Other:</h4>
+        <label class="checkbox-label">
+            <input type="checkbox" name="other" value="wicket-bowled">Wicket Bowled
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" name="other" value="wicket-lbw">Wicket LBW
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" name="other" value="wicket-catch">Wicket Catch
+        </label>
+        <!--FIELDER WICKET SELECTOR-->
+        <div class="bowler-selector">
+          <label for="current-bowler">Select Fielder:</label>
+          <select id="fielder" name="fielder">
+            {% if game.current_innings == 1 %}
+              {% for player in game.bowling1_team.players.all %}
+                <option value="{{player.id}}">{{player.username}}</option>
+              {% endfor %}
+            {% else %}
+                {% for player in game.bowling2_team.players.all %}
+                  <option value="{{player.id}}">{{player.username}}</option>
+                {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+        <label class="checkbox-label">
+            <input type="checkbox" name="other" value="wide">Wide
+        </label>
+        <label class="checkbox-label">
+            <input type="checkbox" name="other" value="no-ball">No-Ball
+        </label>
+      </div>
+        <!--CURRENT BOWLER SELECTOR-->
+        <div class="bowler-selector">
+          <label for="current-bowler">Select Current Bowler:</label>
+          <select id="current-bowler" name="current-bowler">
+            <option value="{{game.current_bowler.id}}">{{game.current_bowler.username}}</option> <!-- first option is the current player-->
+            {% if game.current_innings == 1 %}
+              {% for player in game.bowling1_team.players.all %}
+                <option value="{{player.id}}">{{player.username}}</option>
+              {% endfor %}
+            {% else %}
+                {% for player in game.bowling2_team.players.all %}
+                  <option value="{{player.id}}">{{player.username}}</option>
+                {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+        <!--ON STRIKE BATSMAN SELECTOR-->
+        <div class="bowler-selector">
+          <label for="on-strike">On Strike Batsman:</label>
+          <select id="on-strike" name="on-strike">
+            <option value="{{game.on_strike_batsman.id}}">{{game.on_strike_batsman.username}}</option>
+            {% if game.current_innings == 1 %}
+              {% for player in game.batting1_team.players.all %}
+                <option value="{{player.id}}">{{player.username}}</option>
+              {% endfor %}
+            {% else %}
+              {% for player in game.batting2_team.players.all %}
+                <option value="{{player.id}}">{{player.username}}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+        <!--OFF STRIKE BATSMAN SELECTOR-->
+        <div class="bowler-selector">
+          <label for="off-strike">Off Strike Batsman:</label>
+          <select id="off-strike" name="off-strike">
+            <option value="{{game.off_strike_batsman.id}}">{{game.off_strike_batsman.username}}</option>
+            {% if game.current_innings == 1 %}
+              {% for player in game.batting1_team.players.all %}
+                <option value="{{player.id}}">{{player.username}}</option>
+              {% endfor %}
+            {% else %}
+              {% for player in game.batting2_team.players.all %}
+                <option value="{{player.id}}">{{player.username}}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+      <button class="submit-button" type="submit">Submit Ball</button>
+    </form>
+  {% endif %}
+</body>
+</html>
+
+<!--If we need user to confirm stat entering is finished -->
+{% if game.doneStats == True and game.archived == False%}
+  <form action="" method="POST">
+    {% csrf_token %}
+    <hr>
+    <label><h3>This Game has concluded. Are you finished entering stats?</h3></label>
+    <button class="done-button" type="submit" name="finish_game">Finish Game!</button>
+  </form>
+{% endif %}
 
 {% endblock %}

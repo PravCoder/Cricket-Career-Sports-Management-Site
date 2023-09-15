@@ -3,7 +3,6 @@ from django.shortcuts import redirect, render
 from .models import GameInvite, Player,Team,Game,TeamInvite, PlayerGameStat
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-import django
 
 
 def logout_user(request):
@@ -31,7 +30,7 @@ def home(request):
 
     upcoming_games = []  # all games with completed=False
     for g in user.games.all():
-        if g.completed == False:
+        if g.entering_stats == False:
             upcoming_games.append(g)
     invites = user.team_invites.all()
     game_invites = user.game_invites.all()
@@ -149,7 +148,7 @@ def game_history(request):
     user = request.user
     games = []
     for g in user.games.all():
-        if g.doneStats == True:
+        if g.doneStats == True:  # a game-object is completed if 
             games.append(g)
     context = {"games":games}
     return render(request, "base/game_history.html", context)
@@ -158,21 +157,21 @@ def view_game(request, pk): # game.vids
     print(request.POST) # if box is not checked its key/val pair will not show up in request.POST, and tis value is None
     user = request.user
     game = Game.objects.get(id=int(pk))
-
+    print(request.POST)
     # IF A FORM WAS SUBMITTED
     if request.method == "POST":
         if request.POST.get("batted-first-innings") != None:   # filling with empty stat-objs
             print("SETTING ORDER OF GAME: " + str(int(request.POST.get("batted-first-innings"))))
             batted_first_innings_id = int(request.POST.get("batted-first-innings"))
             if game.team1.id == batted_first_innings_id:
-                game.completed = True
+                game.entering_stats = True
                 game.batting1_team = game.team1 
                 game.bowling1_team = game.team2
                 game.batting2_team = game.team2
                 game.bowling2_team = game.team1
                 game.save()
             if game.team2.id == batted_first_innings_id:   # filling with empty stat-objs
-                game.completed = True
+                game.entering_stats = True
                 game.batting1_team = game.team2
                 game.bowling1_team = game.team1
                 game.batting2_team = game.team1
@@ -275,8 +274,14 @@ def view_game(request, pk): # game.vids
                 bowler_game_stat.extras += 1
                 bowler_game_stat.save()
 
+        if request.POST.get("finish_game") != None:
+            print("Finish the game")
+            game.archived = True  # moves game to game_history
+            game.save()
+            return redirect("home")
+
          # IF GAME HAS BEEN STARTED
-        if game.completed == False:
+        if game.entering_stats == False:
             print("GAME COMPLETED IS FALSE")
             context = {"game":game}
             return render(request, "base/view_game.html", context)
@@ -302,8 +307,9 @@ def increment_game(game):
             reset_over_icons(game)
             game.save()
             return
-        if game.current_over == game.overs:
+        if game.current_over == game.overs:     # if its the last ball and over game is over
             print("GAME END")
+            game.doneStats = True # concludes stat entering of game-object
             game.save()
             return
     
@@ -396,22 +402,3 @@ def register_page(request):
             messages.error(request, "An error has occured during registration")
     context = {"page":page}
     return render(request, "base/login_register.html", context)
-
-
-
-
-# FEATURES TO IMPLEMENT & IMPROVEMENTS:
-# () -When game is deleted delete the cooresponding 
-# (*)- Update career stats after game is finished by itereating through the game players stat objects.
-# (*)- Temporary + long term teams
-# (*)- Create an organization which stores multiple teams. 
-# (*)- A temporary team for 1 game, and a team object for multiple games.
-# ()- Group chat and messaging of current team
-# ()- Download scorecard of game as pdf
-# ()- Social media posts
-# ()- User profile pictures, team profile pictures
-# ()- Search functionality players, teams, posts, serach for teams then invite them instead of having to type their name
-# (*)- Ball by ball stat entering
-# ()- Tap on searched team to send game invite
-# ()- Tap on searched player to send team invite
-# ()- Discard a team with 1 click. Singular player leaves team with 1 click. 

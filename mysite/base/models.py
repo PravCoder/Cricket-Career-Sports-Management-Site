@@ -14,8 +14,10 @@ class Team(models.Model):
     games = models.ManyToManyField("Game", related_name="gammes", blank=True)
 
 class Game(models.Model):
-    completed = models.BooleanField(default=False,null=True,blank=False)
-    doneStats = models.BooleanField(default=False,null=True,blank=False)
+    # we only care if these variables are True
+    entering_stats = models.BooleanField(default=False,null=True,blank=False) # true if stat entering has began, this is set to true when the inilize game info is submitted
+    doneStats = models.BooleanField(default=False,null=True,blank=False) # true is stat entering has concluded, this is set to true when the last over of the last innings is iterated through
+    archived = models.BooleanField(default=False,null=True,blank=False) # this is set to true when the user confirms that there is no edits to make to the stats entered.
     winner = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True, related_name="winner",blank=True)
     team1 = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True, related_name="team1")  # team that sent invite
     team2 = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True, related_name="team2")
