@@ -71,12 +71,14 @@ class Game(models.Model):
             player.fours += stat.fours
             player.sixes += stat.sixes
             player.catches += stat.catches
+            player.balls_bowled = stat.balls_bowled
+            player.balls_played = stat.balls_batted
             player.games_played += 1
             if stat.is_fiftey == True:
                 player.fifties += 1
             if stat.is_century == True:
                 player.centuries += 1
-            
+            player.update_career_highscores(stat)
 
     @property
     def get_batting1_score(self):
@@ -164,6 +166,16 @@ class Player(AbstractUser):
         for stat in game.players_stats.all():
             if stat.player == self:
                 return stat
+    def update_career_highscores(self, stat):
+        if stat.fours > self.fours_hs:
+            self.fours_hs = stat.fours
+        if stat.sixes > self.sixes_hs:
+            self.sixes_hs = stat.sixes
+        if stat.wickets > self.wickets_hs:
+            self.wickets_hs = stat.wickets
+    def update_career_averages(self):
+        pass
+
 
 
 class PlayerGameStat(models.Model):
@@ -193,7 +205,6 @@ class PlayerGameStat(models.Model):
     @property
     def total_runs(self):
         return self.runs_scored + self.runs_ran
-    
     @property
     def is_fiftey(self):
         if self.total_runs >= 50 and self.total_runs < 100:
