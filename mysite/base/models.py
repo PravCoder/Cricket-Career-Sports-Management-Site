@@ -79,6 +79,7 @@ class Game(models.Model):
             if stat.is_century == True:
                 player.centuries += 1
             player.update_career_highscores(stat)
+            player.update_career_averages()
 
     @property
     def get_batting1_score(self):
@@ -137,27 +138,33 @@ class Player(AbstractUser):
     catches = models.IntegerField(default=0,null=True,blank=True)  
     sixes = models.IntegerField(default=0,null=True,blank=True)  
     fours = models.IntegerField(default=0,null=True,blank=True)  
+    extras = models.IntegerField(default=0,null=True,blank=True)  
     games_played = models.IntegerField(default=0,null=True,blank=True)
     games_won = models.IntegerField(default=0,null=True,blank=True)
-
     fifties = models.IntegerField(default=0,null=True,blank=True)  
     centuries = models.IntegerField(default=0,null=True,blank=True)  
-    runs_hs = models.IntegerField(default=0,null=True,blank=True) 
-    runs_average = models.FloatField(default=0,null=True,blank=True) 
     sr = models.FloatField(default=0,null=True,blank=True) 
+
+    runs_hs = models.IntegerField(default=0,null=True,blank=True) 
+    wickets_hs = models.IntegerField(default=0,null=True,blank=True)
+    fours_hs = models.IntegerField(default=0,null=True,blank=True)
+    sixes_hs = models.IntegerField(default=0,null=True,blank=True)
+
+    runs_average = models.FloatField(default=0,null=True,blank=True) 
+    wickets_average = models.FloatField(default=0,null=True,blank=True)
+    fours_average = models.FloatField(default=0,null=True,blank=True)
+    sixes_average = models.FloatField(default=0,null=True,blank=True)
+    catches_average = models.FloatField(default=0,null=True,blank=True)
+    extras_average = models.FloatField(default=0,null=True,blank=True)
+
 
     balls_bowled = models.IntegerField(default=0,null=True,blank=True)
     balls_played = models.IntegerField(default=0,null=True,blank=True)
-    wickets_average = models.FloatField(default=0,null=True,blank=True)
-    wickets_hs = models.IntegerField(default=0,null=True,blank=True)
 
     game_invites = models.ManyToManyField("GameInvite", related_name="game_invites", blank=True)
     team_invites = models.ManyToManyField("TeamInvite", related_name="team_invites", blank=True)
-
     games = models.ManyToManyField("Game", related_name="games", blank=True)
 
-    fours_hs = models.IntegerField(default=0,null=True,blank=True)
-    sixes_hs = models.IntegerField(default=0,null=True,blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
@@ -167,6 +174,8 @@ class Player(AbstractUser):
             if stat.player == self:
                 return stat
     def update_career_highscores(self, stat):
+        if stat.total_runs > self.runs_hs:
+            self.runs_hs = stat.total_runs
         if stat.fours > self.fours_hs:
             self.fours_hs = stat.fours
         if stat.sixes > self.sixes_hs:
@@ -174,7 +183,12 @@ class Player(AbstractUser):
         if stat.wickets > self.wickets_hs:
             self.wickets_hs = stat.wickets
     def update_career_averages(self):
-        pass
+        self.runs_average = self.runs /self.games_played
+        self.wickets_average = self.wickets /self.games_played
+        self.fours_average = self.fours /self.games_played
+        self.sixes_average = self.sixes /self.games_played
+        self.catches_average = self.catches /self.games_played
+        self.extras_average = self.extras /self.games_played
 
 
 
