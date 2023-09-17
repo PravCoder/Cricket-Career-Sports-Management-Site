@@ -319,7 +319,6 @@ def increment_game(game):
             reset_over_icons(game)
             game.save()
             return
-    
 def set_ball_icon(game, outcome):
     print("SET BALL ICON")
     if game.current_ball == 1:

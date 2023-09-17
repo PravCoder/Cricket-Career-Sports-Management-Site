@@ -62,6 +62,23 @@ class Game(models.Model):
     players_stats = models.ManyToManyField("PlayerGameStat", related_name="players_stats", blank=True)
 
     @property
+    def update_players_career_stats(self):
+        for stat in self.player_stats.objects.all():
+            player = stat.player
+            player.runs += stat.total_runs
+            player.wickets += stat.wickets
+            player.catches += stat.catches
+            player.fours += stat.fours
+            player.sixes += stat.sixes
+            player.catches += stat.catches
+            player.games_played += 1
+            if stat.is_fiftey == True:
+                player.fifties += 1
+            if stat.is_century == True:
+                player.centuries += 1
+            
+
+    @property
     def get_batting1_score(self):
         runs = 0
         for stat in self.players_stats.all():
@@ -122,6 +139,7 @@ class Player(AbstractUser):
     games_won = models.IntegerField(default=0,null=True,blank=True)
 
     fifties = models.IntegerField(default=0,null=True,blank=True)  
+    centuries = models.IntegerField(default=0,null=True,blank=True)  
     runs_hs = models.IntegerField(default=0,null=True,blank=True) 
     runs_average = models.FloatField(default=0,null=True,blank=True) 
     sr = models.FloatField(default=0,null=True,blank=True) 
@@ -175,6 +193,19 @@ class PlayerGameStat(models.Model):
     @property
     def total_runs(self):
         return self.runs_scored + self.runs_ran
+    
+    @property
+    def is_fiftey(self):
+        if self.total_runs >= 50 and self.total_runs < 100:
+            return True
+        else:
+            return False
+    @property
+    def is_century(self):
+        if self.total_runs >= 100:
+            return True
+        else:
+            return False
 
 
 
