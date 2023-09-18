@@ -63,7 +63,7 @@ class Game(models.Model):
 
     @property
     def update_players_career_stats(self):
-        for stat in self.player_stats.objects.all():
+        for stat in self.players_stats.all():
             player = stat.player
             player.runs += stat.total_runs
             player.wickets += stat.wickets
@@ -78,8 +78,11 @@ class Game(models.Model):
                 player.fifties += 1
             if stat.is_century == True:
                 player.centuries += 1
+            player.save()
             player.update_career_highscores(stat)
             player.update_career_averages()
+            player.save()
+            
 
     @property
     def get_batting1_score(self):
@@ -189,6 +192,7 @@ class Player(AbstractUser):
         self.sixes_average = self.sixes /self.games_played
         self.catches_average = self.catches /self.games_played
         self.extras_average = self.extras /self.games_played
+        self.save()
 
 
 
