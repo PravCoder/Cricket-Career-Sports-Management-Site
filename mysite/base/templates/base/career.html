@@ -42,9 +42,11 @@ table.center {
     <th>HS</th>
     <th>4's HS</th>
     <th>6's HS</th>
-    <th>Ave</th>
+    <th>4's Avr</th>
+    <th>6's Avr</th>
+    <th>Runs Ave</th>
     <th>Balls</th>
-    <th>Catches</th>
+
   </tr>
   <tr>
     <td>{{user.games_played}}</td>
@@ -57,9 +59,10 @@ table.center {
     <td>{{user.runs_hs}}</td>
     <td>{{user.fours_hs}}</td>
     <td>{{user.sixes_hs}}</td>
+    <td>{{user.fours_average}}</td>
+    <td>{{user.sixes_average}}</td>
     <td>{{user.runs_average}}</td>
     <td>{{user.balls_played}}</td>
-    <td>{{user.catches}}</td>
   </tr>
   <tr>
   </tr>
@@ -73,14 +76,19 @@ table.center {
     <tr>
       <th>Wkts</th>
       <th>Balls</th>
-      <th>Ave Wkts</th>
-      <th>HS Wkts</th>
+      <th>Wkts Average</th>
+      <th>Wkts Highscore</th>
+      <th>Catches</th>
+      <th>Catches Avr</th>
+      <th>Extras Avr</th>
     </tr>
     <tr>
       <td>{{user.wickets}}</td>
       <td>{{user.balls_bowled}}</td>
       <td>{{user.wickets_average}}</td>
       <td>{{user.wickets_hs}}</td>
+      <td>{{user.catches}}</td>
+      <td>{{user.extras_average}}</td>
     </tr>
     <tr>
     </tr>
