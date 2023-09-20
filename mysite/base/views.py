@@ -280,6 +280,7 @@ def view_game(request, pk): # game.vids
             game.save()
             game.update_players_career_stats
             game.confirm_winner
+            game.update_players_win_percentage
             return redirect("home")
 
          # IF GAME HAS BEEN STARTED
