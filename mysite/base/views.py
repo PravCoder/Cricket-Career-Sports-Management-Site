@@ -279,6 +279,7 @@ def view_game(request, pk): # game.vids
             game.archived = True  # moves game to game_history
             game.save()
             game.update_players_career_stats
+            game.confirm_winner
             return redirect("home")
 
          # IF GAME HAS BEEN STARTED

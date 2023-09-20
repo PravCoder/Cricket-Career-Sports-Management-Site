@@ -13,6 +13,7 @@ class Team(models.Model):
     filler = models.BooleanField(default=False,null=True,blank=False)
     games = models.ManyToManyField("Game", related_name="gammes", blank=True)
 
+
 class Game(models.Model):
     # we only care if these variables are True
     entering_stats = models.BooleanField(default=False,null=True,blank=False) # true if stat entering has began, this is set to true when the inilize game info is submitted
@@ -82,7 +83,37 @@ class Game(models.Model):
             player.update_career_highscores(stat)
             player.update_career_averages()
             player.save()
-            
+
+    @property
+    def confirm_winner(self):
+        if self.get_batting1_score > self.get_batting2_score:
+            self.winner = self.team1
+        if self.get_batting2_score > self.get_batting1_score:
+            self.winner = self.team2
+        self.save()
+    @property
+    def update_players_win_percentage(self):
+            if self.winner == self.team1:
+                for player in self.team1.players.all:
+                    player.games_played += 1
+                    player.games_won += 1
+                    player.save()
+                    player.set_win_percentage
+                for player in self.team2.players.all:
+                    player.games_played += 1
+                    player.save()
+                    player.set_win_percentage
+            if self.winner == self.team2:
+                for player in self.team1.players.all:
+                    player.games_played += 1
+                    player.save()
+                    player.set_win_percentage
+                for player in self.team2.players.all:
+                    player.games_won += 1
+                    player.games_played += 1
+                    player.save()
+                    player.set_win_percentage
+                    
 
     @property
     def get_batting1_score(self):
@@ -144,6 +175,8 @@ class Player(AbstractUser):
     extras = models.IntegerField(default=0,null=True,blank=True)  
     games_played = models.IntegerField(default=0,null=True,blank=True)
     games_won = models.IntegerField(default=0,null=True,blank=True)
+    win_percentage = models.FloatField(default=0,null=True,blank=True) 
+
     fifties = models.IntegerField(default=0,null=True,blank=True)  
     centuries = models.IntegerField(default=0,null=True,blank=True)  
     sr = models.FloatField(default=0,null=True,blank=True) 
@@ -172,6 +205,11 @@ class Player(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 
+    @property
+    def set_win_percentage(self):
+        self.win_percentage = self.games_won/self.games_played
+        self.save()
+
     def get_game_stat(self, game):
         for stat in game.players_stats.all():
             if stat.player == self:
@@ -185,6 +223,7 @@ class Player(AbstractUser):
             self.sixes_hs = stat.sixes
         if stat.wickets > self.wickets_hs:
             self.wickets_hs = stat.wickets
+        self.save()
     def update_career_averages(self):
         self.runs_average = self.runs /self.games_played
         self.wickets_average = self.wickets /self.games_played
