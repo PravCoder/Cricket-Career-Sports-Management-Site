@@ -74,7 +74,7 @@ class Game(models.Model):
             player.catches += stat.catches
             player.balls_bowled = stat.balls_bowled
             player.balls_played = stat.balls_batted
-            player.games_played += 1
+            player.games_played += 1  # increment each players games-played
             if stat.is_fiftey == True:
                 player.fifties += 1
             if stat.is_century == True:

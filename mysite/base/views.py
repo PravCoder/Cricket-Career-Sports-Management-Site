@@ -349,6 +349,7 @@ def increment_game(game):
             print("INNINGS 1 END")
             game.current_innings = 2
             game.current_ball = 1
+            game.current_over = 1
             reset_over_icons(game)
             game.save()
             return
