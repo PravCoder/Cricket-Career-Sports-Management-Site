@@ -16,4 +16,6 @@ urlpatterns = [
     path("logout/", views.logout_user, name="logout"),
 
     path("unauthorized/", views.unauthorized, name="unauthorized"),
+
+    path("reset/", views.reset, name="reset"),
 ]

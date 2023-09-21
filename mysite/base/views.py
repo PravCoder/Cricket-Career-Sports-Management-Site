@@ -14,6 +14,31 @@ def logout_user(request):
 def unauthorized(request):
     context = {}
     return render(request, "base/login_error_page.html", context)
+def reset(request):
+    for player in Player.objects.all():
+        player.runs = 0
+        player.wickets = 0
+        player.catches = 0
+        player.fours = 0
+        player.sixes = 0
+        player.games_played = 0
+        player.games_won = 0
+        player.win_percentage = 0
+        player.fifties = 0
+        player.runs_hs = 0
+        player.wickets_hs = 0
+        player.fours_hs = 0
+        player.sixes_hs = 0
+        player.runs_average = 0
+        player.wickets_average = 0
+        player.fours_average = 0
+        player.sixes_average = 0
+        player.catches_average = 0
+        player.extras_average = 0
+        player.balls_played = 0
+        player.save()
+    context = {}
+    return render(request, "base/home.html", context)
 
 def home(request):
     user = request.user
@@ -281,6 +306,7 @@ def view_game(request, pk): # game.vids
             game.update_players_career_stats
             game.confirm_winner
             game.update_players_win_percentage
+            game.save()
             return redirect("home")
 
          # IF GAME HAS BEEN STARTED
