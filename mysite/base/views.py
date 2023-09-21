@@ -37,6 +37,10 @@ def reset(request):
         player.extras_average = 0
         player.balls_played = 0
         player.save()
+    for game in Game.objects.all():
+        game.delete()
+    for stat in PlayerGameStat.objects.all():
+        stat.delete()
     context = {}
     return render(request, "base/home.html", context)
 

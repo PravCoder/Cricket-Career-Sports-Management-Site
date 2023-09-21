@@ -95,22 +95,18 @@ class Game(models.Model):
     def update_players_win_percentage(self):
             if self.winner == self.team1:
                 for player in self.team1.players.all():
-                    player.games_played += 1
                     player.games_won += 1
                     player.save()
                     player.set_win_percentage
                 for player in self.team2.players.all():
-                    player.games_played += 1
                     player.save()
                     player.set_win_percentage
             if self.winner == self.team2:
                 for player in self.team1.players.all():
-                    player.games_played += 1
                     player.save()
                     player.set_win_percentage
                 for player in self.team2.players.all():
                     player.games_won += 1
-                    player.games_played += 1
                     player.save()
                     player.set_win_percentage
                     
