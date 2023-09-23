@@ -1,5 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from datetime import datetime
+
+class Organization(models.Model):
+    name = models.CharField(max_length=200,null=True)
+    description = models.CharField(max_length=200,null=True)
+    members = models.ManyToManyField("Player", related_name="members", blank=True)
+    date_established = models.DateTimeField(default=datetime.now, blank=True)
+    location = models.CharField(max_length=200,null=True)
+    games = models.ManyToManyField("Game", related_name="org_games", blank=True)
 
 class Team(models.Model):
     name = models.CharField(max_length=200,null=True)
@@ -10,8 +19,8 @@ class Team(models.Model):
     runs_average = models.FloatField(default=0,null=True,blank=True)
     wickets_average = models.FloatField(default=0,null=True,blank=True)
 
-    filler = models.BooleanField(default=False,null=True,blank=False)
     games = models.ManyToManyField("Game", related_name="gammes", blank=True)
+    temporary = models.BooleanField(default=False,null=True,blank=False)
 
 
 class Game(models.Model):
@@ -28,8 +37,6 @@ class Game(models.Model):
 
     batting2_team = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True, related_name="batting2")
     bowling2_team  = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True, related_name="bowling2")
-
-
 
     year = models.CharField(max_length=200,null=True)
     month = models.CharField(max_length=200,null=True)
@@ -163,6 +170,7 @@ class Player(AbstractUser):
     email = models.EmailField(unique=True, null=True)
 
     team = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True)
+    organization = models.ForeignKey(Organization,on_delete=models.SET_NULL,null=True)
     runs = models.IntegerField(default=0,null=True,blank=True)
     wickets = models.IntegerField(default=0,null=True,blank=True)  
     catches = models.IntegerField(default=0,null=True,blank=True)  
@@ -196,6 +204,7 @@ class Player(AbstractUser):
     game_invites = models.ManyToManyField("GameInvite", related_name="game_invites", blank=True)
     team_invites = models.ManyToManyField("TeamInvite", related_name="team_invites", blank=True)
     games = models.ManyToManyField("Game", related_name="games", blank=True)
+
 
 
     USERNAME_FIELD = "email"
