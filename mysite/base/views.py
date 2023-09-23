@@ -1,6 +1,6 @@
 from django.http import response
 from django.shortcuts import redirect, render
-from .models import GameInvite, Player,Team,Game,TeamInvite, PlayerGameStat
+from .models import GameInvite, Player,Team,Game,TeamInvite,PlayerGameStat,Organization
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
@@ -10,7 +10,6 @@ def logout_user(request):
         logout(request)
         print("User has been logged out")
     return redirect("home")
-
 def unauthorized(request):
     context = {}
     return render(request, "base/login_error_page.html", context)
@@ -378,6 +377,23 @@ def reset_over_icons(game):
     game.ball6 = "None"
     game.save()
 
+def create_organization(request):
+    user = request.user
+    if request.method == "POST":
+        name = request.POST.get("name")
+        description = request.POST.get("description")
+        location = request.POST.get("location")
+        org = Organization.objects.create(name=name, description=description, location=location)
+        org.members.add(user)
+        user.organization = org
+        user.save()
+        org.save()
+    context = {}
+    return render(request, "base/create_organization.html", context) 
+def view_organization(request, pk):
+    org = Organization.objects.get(id=int(pk))
+    context = {"org":org}
+    return render(request, "base/view_organization.html", context) 
 
 def schedule_game(request):
     user = request.user

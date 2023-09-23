@@ -8,6 +8,7 @@
 <style>
 .center {
   text-align: center;
+  color: black;
 }
 table, th, td {
   border: 1px solid;
@@ -20,10 +21,17 @@ table.center {
   margin-left: auto; 
   margin-right: auto;
 }
+.org-link {
+  color: black;
+}
 </style>
 </head>
 <body>
 <h1 class="center">{{user.first_name}} {{user.last_name}}'s Career</h1>
+
+{% if user.organization %}
+  <h3 class="center"><a href="{% url 'view-organization' user.organization.id %}" class="org-link">Organization: {{user.organization.name}}</a></h3>
+{% endif %}
 
 <h3></h3>
 <div class="center">
@@ -95,6 +103,8 @@ table.center {
     <tr>
     </tr>
 </table>
+
+
 
 </body>
 </html>

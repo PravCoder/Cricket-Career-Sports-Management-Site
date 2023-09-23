@@ -1,0 +1,114 @@
+{% extends 'main.html' %}
+
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organization Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        .organization-info {
+            margin-bottom: 30px;
+        }
+
+        .organization-info h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .organization-info p {
+            margin: 0;
+        }
+
+        .players {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .player {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .player img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+
+        .player-info {
+            flex: 1;
+        }
+
+        .player-info h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .player-info p {
+            margin: 0;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{{org.name}}</h1>
+        </div>
+        <div class="organization-info">
+            <h2>About Us</h2>
+            <p>{{org.description}}</p>
+            <p>Location: {{org.location}}</p>
+        </div>
+        <div class="players">
+            <h2>Our Players</h2>
+            <ul>
+                {% for p in org.members.all %}
+                    <li class="player">
+                        <img src="player1.jpg" alt="Player 1">
+                        <div class="player-info">
+                            <h3>{{p.first_name}} {{p.last_name}}</h3>
+                            <p><a href="{% url 'player-career' p.id %}" >{{p.username}}</a></p>
+                            
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
+
+{% endblock %}

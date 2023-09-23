@@ -17,5 +17,8 @@ urlpatterns = [
 
     path("unauthorized/", views.unauthorized, name="unauthorized"),
 
+    path("create-organization/", views.create_organization, name="create-organization"),
+    path("view-organization/<str:pk>", views.view_organization, name="view-organization"),
+
     path("reset/", views.reset, name="reset"),
 ]
