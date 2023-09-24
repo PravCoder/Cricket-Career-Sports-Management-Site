@@ -8,79 +8,148 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Organization Page</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        align-items: center;
+    }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        align-items: center;
+    }
 
-        .header {
-            text-align: center;
-            padding: 20px 0;
-        }
+    .header {
+        text-align: center;
+        padding: 20px 0;
+        align-items: center;
+    }
 
-        h1 {
-            margin: 0;
-        }
+    h1 {
+        margin: 0;
 
-        .organization-info {
-            margin-bottom: 30px;
-        }
+    }
 
-        .organization-info h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
+    .organization-info {
+        margin-bottom: 30px;
+        align-items: center;
+    }
 
-        .organization-info p {
-            margin: 0;
-        }
+    .organization-info h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+        align-items: center;
+    }
 
-        .players {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+    .organization-info p {
+        margin: 0;
+    }
 
-        .player {
-            display: flex;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #ccc;
-        }
+    .players {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        align-items: center;
+    }
 
-        .player img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 20px;
-        }
+    .player {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #ccc;
+    }
 
-        .player-info {
-            flex: 1;
-        }
+    .player img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 20px;
+    }
 
-        .player-info h3 {
-            margin: 0;
-            font-size: 18px;
-        }
+    .player-info {
+        flex: 1;
+    }
 
-        .player-info p {
-            margin: 0;
-            color: #777;
-        }
-    </style>
+    .player-info h3 {
+        margin: 0;
+        font-size: 18px;
+    }
+
+    .player-info p {
+        margin: 0;
+        color: #777;
+    }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    align-items: center;
+}
+
+
+.search-container {
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    text-align: center;
+    width: 400px;
+    align-items: center;
+}
+
+#search-input {
+    width: 70%;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    margin-right: 10px;
+}
+
+#search-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+#search-button:hover {
+    background-color: #0056b3;
+}
+
+#search-results {
+    margin-top: 20px;
+    text-align: left;
+}
+
+/* Style each player result item */
+.player-result {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.player-result img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+
+</style>
 </head>
 <body>
     <div class="container">
@@ -93,11 +162,11 @@
             <p>Location: {{org.location}}</p>
         </div>
         <div class="players">
-            <h2>Our Players</h2>
+            <h3>Members</h3>
             <ul>
                 {% for p in org.members.all %}
                     <li class="player">
-                        <img src="player1.jpg" alt="Player 1">
+                        <img src="#" alt="Player 1">
                         <div class="player-info">
                             <h3>{{p.first_name}} {{p.last_name}}</h3>
                             <p><a href="{% url 'player-career' p.id %}" >{{p.username}}</a></p>
@@ -106,6 +175,27 @@
                     </li>
                 {% endfor %}
             </ul>
+        </div>
+        <br>
+        <h3>Add players to organization...</h3>
+        <div class="search-container">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <input type="text" id="search-players" name="search-players" placeholder="Search for players..." autocomplete="off">
+                <button type="submit" id="search-button">Search</button>
+            </form>
+            <div id="search-results">
+                {% for p in query_players %}
+                    <li class="player">
+                        <img src="#" alt="Player 1">
+                        <div class="player-info">
+                            <h3>{{p.first_name}} {{p.last_name}}</h3>
+                            <p><a href="{% url 'player-career' p.id %}" >{{p.username}}</a></p>
+                            
+                        </div>
+                    </li>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </body>

@@ -392,7 +392,15 @@ def create_organization(request):
     return render(request, "base/create_organization.html", context) 
 def view_organization(request, pk):
     org = Organization.objects.get(id=int(pk))
-    context = {"org":org}
+    query_players = []
+    if request.method == "POST":
+        query = request.POST.get("search-players")
+        if query != None and query != "":
+            for p in Player.objects.all():
+                if query.lower() in p.username.lower() or query.lower() in p.first_name.lower() or query.lower() in p.last_name.lower():
+                    query_players.append(p)
+                    
+    context = {"org":org, "query_players":query_players}
     return render(request, "base/view_organization.html", context) 
 
 def schedule_game(request):
