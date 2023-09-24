@@ -1,16 +1,18 @@
 
 ## TODO / BUGS TO FIX / FEATURES TO ADD:
     - High Priority
+         
+        - Store the game score in integer variables instead 
 
-        -Check stat calculation and setting in blank setting. Reset existing players stats.
+        - Long term team stats
 
-        -Store the game score in integer variables instead 
+        - Fix Unqiue constraint failed when submitted ball. UNIQUE constraint failed: base_game.on_strike_batsman_id. This happens when wrong batsmen are entered. Make a catch.
 
-        -Fix Unqiue constraint failed when submitted ball. UNIQUE constraint failed: base_game.on_strike_batsman_id. This happens when wrong batsmen are entered.
+        - Refactor models for temporary & long term team creation and deletion. Create organization model where a community c an collectively create their own organization to run games with temporary & long term teams. 
 
-        -Refactor models for temporary & long term team creation and deletion. Create organization model where a community c an collectively create their own organization to run games with temporary & long term teams. 
+        - When all wickets of a team fall end/increment innings.
 
-        -When all wickets of a team fall end/increment innings.
+        - Cateogize wickets into different variants for career stats.
 
     - Medium Priority
         - Configure media images for profile pictures.
@@ -23,9 +25,12 @@
 
         - To save databse only allow user to save 10 games, and discard other which deletes all related games?
 
+        - Super Over
+
 
     - Low Priority
         - Store data for where ball pitches and where ball is hit.
+        
         - Social media posts.
 
         - Download score card of game as PDF.
@@ -46,11 +51,9 @@
 
         - Brainstorm features on how to make it more competitive for users.
 
-## TESTS:
-- Create 2 games. Record stats and entered and manually compute career stats
-and make sure each game is working
-
 ## DONE:
+- Career stats to test: 50's	100's	HS	4's HS	6's HS	4's Avr	6's Avr Runs Ave.
+- Check stat calculation and setting in blank setting. Reset existing players stats.
 - Implement Win condition for game. And win percentage for player in game.
 - Update each player's career stats after game is over.
 Iterate each game stat and update players career stat for that player. (TEST)
@@ -64,4 +67,3 @@ For last ball for 1st innings increment innings, this should be reflected in tem
 existing virtual environment and restarting.
 - Fixed early over increment bug.
 - Make sure current score of entire game is showing.
-
