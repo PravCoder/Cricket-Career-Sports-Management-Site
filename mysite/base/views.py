@@ -1,6 +1,6 @@
 from django.http import response
 from django.shortcuts import redirect, render
-from .models import GameInvite, Player,Team,Game,TeamInvite,PlayerGameStat,Organization
+from .models import GameInvite, Player,Team,Game,TeamInvite,PlayerGameStat,Organization,OrganizationInvite
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
@@ -62,11 +62,14 @@ def home(request):
             upcoming_games.append(g)
     invites = user.team_invites.all()
     game_invites = user.game_invites.all()
+    org_invites = user.org_invites.all()
 
     team_accept = request.POST.get("Accept")  # accept-val = "team-id#invite-id"
     team_decline = request.POST.get("Decline")
     game_accept = request.POST.get("Accept Game")
     game_decline = request.POST.get("Decline Game")
+    org_accept = request.POST.get("AcceptOrg")
+    org_decline = request.POST.get("AcceptDecline")
     if request.method == "POST":
         # IF PLAYER ACCEPTS TEAM INVITE ADD PLAYER TO THE TEAM
         if team_accept:
@@ -117,8 +120,24 @@ def home(request):
         if game_decline:
             inv = GameInvite.objects.get(id=game_decline)
             inv.delete()
+        if org_accept:
+            info = org_accept.split("#") # [org-id, invite-id]
+            invite = OrganizationInvite.objects.get(id=int(info[1]))
+            org = Organization.objects.get(id=int(info[0]))
+            org.members.add(user)
+            org.save()
+            try:
+                user.organization = org
+                user.save()
+            except:
+                prev_org = user.organization
+                prev_org.members.remove(user)
+                prev_org.save()
+                user.organizaiton = org
+                user.save()
+            invite.delete()
 
-    context = {"games":upcoming_games, "invites":invites, "game_invites":game_invites}
+    context = {"games":upcoming_games, "invites":invites, "game_invites":game_invites, "org_invites":org_invites}
     return render(request, "base/home.html", context)
  
 def player_career(request, pk):
@@ -401,15 +420,17 @@ def view_organization(request, pk):
                     query_players.append(p)
         add_player_id = request.POST.get("add-player-org")
         if add_player_id != None:
-            pass
-            """player_to_add = Player.objects.get(id=int(add_player_id))
-            player_to_add.organization = org
-            org.members.add(player_to_add)
-            org.save()
-            player_to_add.save()"""
-
-                    
-    context = {"org":org, "query_players":query_players}
+            add_player = Player.objects.get(id=int(add_player_id))
+            org_invite = OrganizationInvite.objects.create(organization=org)
+            add_player.org_invites.add(org_invite)
+            add_player.save()
+            org_invite.save()
+    
+    user_in_org = False
+    if request.user in list(org.members.all()):
+        user_in_org = True
+    print(user_in_org)
+    context = {"org":org, "query_players":query_players, "user_in_org":user_in_org}
     return render(request, "base/view_organization.html", context) 
 
 def schedule_game(request):

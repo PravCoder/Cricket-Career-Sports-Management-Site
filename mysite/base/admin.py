@@ -11,3 +11,4 @@ admin.site.register(TeamInvite)
 
 admin.site.register(PlayerGameStat)
 admin.site.register(Organization)
+admin.site.register(OrganizationInvite)

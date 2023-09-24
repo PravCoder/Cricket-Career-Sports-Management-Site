@@ -200,6 +200,7 @@
             </ul>
         </div>
         <br>
+        {% if user_in_org == True %}
         <h3>Add players to organization...</h3>
         <div class="search-container">
             <form action="" method="POST">
@@ -207,24 +208,26 @@
                 <input type="text" id="search-players" name="search-players" placeholder="Search for players..." autocomplete="off">
                 <button type="submit" id="search-button">Search</button>
             </form>
-            <div id="search-results">
-                {% for p in query_players %}
-                    <li class="player">
-                        <img src="#" alt="Player 1">
-                        <div class="player-info">
-                            <h3>{{p.first_name}} {{p.last_name}} 
-                               
-                            </h3>
-                            <p><a href="{% url 'player-career' p.id %}" >{{p.username}}</a></p>
-                        </div>
-                        <form action="" method="POST" class="player-form">
-                            {% csrf_token %}
-                            <button class="add-button" name="add-player-org" value="{{p.id}}">Add to Organization</button>
-                        </form>
-                    </li>
-                {% endfor %}
-            </div>
+            
+                <div id="search-results">
+                    {% for p in query_players %}
+                        <li class="player">
+                            <img src="#" alt="Player 1">
+                            <div class="player-info">
+                                <h3>{{p.first_name}} {{p.last_name}} 
+                                
+                                </h3>
+                                <p><a href="{% url 'player-career' p.id %}" >{{p.username}}</a></p>
+                            </div>
+                            <form action="" method="POST" class="player-form">
+                                {% csrf_token %}
+                                <button class="add-button" name="add-player-org" value="{{p.id}}">Add to Organization</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </div>
         </div>
+        {% endif %}
     </div>
 </body>
 </html>

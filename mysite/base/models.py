@@ -165,7 +165,6 @@ class TeamInvite(models.Model):  # for long term team?
 
 class OrganizationInvite(models.Model):
     organization = models.ForeignKey(Organization,on_delete=models.SET_NULL,null=True, blank=True)
-    to_player = models.OneToOneField("Player", related_name="to_Player",on_delete=models.SET_NULL,null=True,blank=True,unique=False)
 
 class Player(AbstractUser):
     first_name = models.CharField(max_length=200, null=True)
@@ -206,6 +205,7 @@ class Player(AbstractUser):
 
     game_invites = models.ManyToManyField("GameInvite", related_name="game_invites", blank=True)
     team_invites = models.ManyToManyField("TeamInvite", related_name="team_invites", blank=True)
+    org_invites = models.ManyToManyField("OrganizationInvite", related_name="org_invites", blank=True)
     games = models.ManyToManyField("Game", related_name="games", blank=True)
 
 

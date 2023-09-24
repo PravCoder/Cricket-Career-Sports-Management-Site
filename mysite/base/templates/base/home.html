@@ -199,17 +199,30 @@ input[type=button], input[type=submit], input[type=reset] {
         <h3>Join Team Invites:</h3>
         <div>
             {% for invite in invites %}
-                <div class="card">
+                <div class="game-card">
                     <a href="{% url 'team' invite.to_team.id %}"><h4>{{invite.to_team.name}}</h4></a> 
                     <form method="POST" action="" id="invite-form">  
-                        {% csrf_token %}
+                        {% csrf_token %} <!--TEAM-->
                         <button name="Accept" value="{{invite.to_team.id}}#{{invite.id}}" type="submit">Accept</button>
                         <button name="Decline" value="{{invite.to_team.id}}#{{invite.id}}" type="submit">Decline</button>
                     </form>
                     </div>
                 </div>
-
-
+            {% endfor %}
+        </div>
+        <h3>Join Organization Invites:</h3>
+        <div>
+            {% for invite in org_invites %}
+                <div class="game-card">
+                    <a href="{% url 'view-organization' invite.organization.id %}"><h4>{{invite.organization.name}}</h4></a> 
+                    <p>Wants to invite you to join their organization!</p>
+                    <form method="POST" action="" id="invite-form">  
+                        {% csrf_token %}
+                        <button name="AcceptOrg" value="{{invite.organization.id}}#{{invite.id}}" type="submit">Accept</button>
+                        <button name="DeclineOrg" value="{{invite.organization.id}}#{{invite.id}}" type="submit">Decline</button>
+                    </form>
+                    </div>
+                </div>
             {% endfor %}
         </div>
         {% for post in posts %}
