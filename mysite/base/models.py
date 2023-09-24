@@ -150,10 +150,9 @@ class Game(models.Model):
                 wickets += stat.wickets
         return wickets
     
-class GameInvite(models.Model):
+class GameInvite(models.Model): # for games outside of organization
     from_team = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True, related_name="from_team")
     to_team = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True, related_name="to_team")
-
     year = models.CharField(max_length=200,null=True)
     month = models.CharField(max_length=200,null=True)
     day = models.CharField(max_length=200,null=True)
@@ -161,8 +160,12 @@ class GameInvite(models.Model):
     location = models.CharField(max_length=200,null=True)
     overs = models.IntegerField(default=0,null=True,blank=True)
 
-class TeamInvite(models.Model):
+class TeamInvite(models.Model):  # for long term team?
     to_team = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True)  # the team you got invited to
+
+class OrganizationInvite(models.Model):
+    organization = models.ForeignKey(Organization,on_delete=models.SET_NULL,null=True, blank=True)
+    to_player = models.OneToOneField("Player", related_name="to_Player",on_delete=models.SET_NULL,null=True,blank=True,unique=False)
 
 class Player(AbstractUser):
     first_name = models.CharField(max_length=200, null=True)

@@ -400,7 +400,14 @@ def view_organization(request, pk):
                 if query.lower() in p.username.lower() or query.lower() in p.first_name.lower() or query.lower() in p.last_name.lower():
                     query_players.append(p)
         add_player_id = request.POST.get("add-player-org")
-        print(add_player_id)
+        if add_player_id != None:
+            pass
+            """player_to_add = Player.objects.get(id=int(add_player_id))
+            player_to_add.organization = org
+            org.members.add(player_to_add)
+            org.save()
+            player_to_add.save()"""
+
                     
     context = {"org":org, "query_players":query_players}
     return render(request, "base/view_organization.html", context) 
