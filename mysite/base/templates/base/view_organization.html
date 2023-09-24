@@ -101,7 +101,7 @@
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     padding: 20px;
     text-align: center;
-    width: 400px;
+    width: 750px;
     align-items: center;
 }
 
@@ -148,6 +148,29 @@
     margin-right: 10px;
 }
 
+/* CSS */
+.player-form {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* Add spacing between players */
+}
+
+.add-button {
+    background-color: #1da1f2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 10px; /* Add spacing between the player info and button */
+}
+
+.add-button:hover {
+    background-color: #0e75c2;
+}
+
+
+
 
 </style>
 </head>
@@ -189,10 +212,15 @@
                     <li class="player">
                         <img src="#" alt="Player 1">
                         <div class="player-info">
-                            <h3>{{p.first_name}} {{p.last_name}}</h3>
+                            <h3>{{p.first_name}} {{p.last_name}} 
+                               
+                            </h3>
                             <p><a href="{% url 'player-career' p.id %}" >{{p.username}}</a></p>
-                            
                         </div>
+                        <form action="" method="POST" class="player-form">
+                            {% csrf_token %}
+                            <button class="add-button" name="add-player-org" value="{{p.id}}">Add to Organization</button>
+                        </form>
                     </li>
                 {% endfor %}
             </div>
