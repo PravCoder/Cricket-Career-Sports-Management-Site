@@ -44,7 +44,7 @@ input[type=button], input[type=submit], input[type=reset] {
 </style>
 </head>
 <body>
-{% if team.filler == False %}  <!-- if player is apart of a team -->
+{% if team != None %}  <!-- if player is apart of a team -->
 <h1>{{team.name}}</h1>
 <h3>Captian: {{team.captain.username}}</h3>
 

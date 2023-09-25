@@ -172,6 +172,80 @@
 
 
 
+
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+h1 {
+    text-align: center;
+    margin: 20px 0;
+}
+
+form {
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+label,
+input,
+button {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.player-pool {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.team {
+    flex: 0 0 48%; /* Adjust the width as needed */
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    width: 300px;
+}
+
+.team h2 {
+    text-align: center;
+}
+
+.team-list {
+    list-style-type: none;
+    padding: 0;
+    min-height: 100px;
+    border: 1px dashed #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+
+
+button[type="submit"] {
+    background-color: #1da1f2;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+button[type="submit"]:hover {
+    background-color: #0e75c2;
+}
 </style>
 </head>
 <body>
@@ -200,6 +274,8 @@
             </ul>
         </div>
         <br>
+        <br>
+        <br>
         {% if user_in_org == True %}
         <h3>Add players to organization...</h3>
         <div class="search-container">
@@ -227,6 +303,42 @@
                     {% endfor %}
                 </div>
         </div>
+        <br>
+        <br>
+        <br>
+        <h3>Schedule Short-Term Game</h3>
+        <form method="POST" action="">
+            {% csrf_token %}
+            <label for="overs">Number of Overs:</label>
+            <input type="number" id="overs" name="overs" min="1" required placeholder="per innings">
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" required placeholder="address">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required placeholder="mm/dd/yyyy">
+            <div class="player-pool">
+                <div class="team">
+                    <h2><label for="team1-name">Enter team1 name:</label><input type="text" id="team1-name" name="team1-name" required placeholder="team-1 name..."></h2>
+                    <ul id="your-team" class="team-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                       {% for member in org.members.all %}
+                            {{member.first_name}} {{member.last_name}}
+                            <input type="checkbox", value="clicked", name="team1#{{member.id}}">
+                       {% endfor %}
+                    </ul>
+                </div>
+                <div class="team">
+                    <h2><label for="team2-name">Enter team2 name:</label><input type="text" id="team2-name" name="team2-name" required placeholder="team-2 name..."></h2>
+                    <ul id="opposing-team" class="team-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        {% for member in org.members.all %}
+                            {{member.first_name}} {{member.last_name}} 
+                            <input type="checkbox", value="clicked", name="team2#{{member.id}}">
+                    
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+    
+            <button type="submit">Schedule Game</button>
+        </form>
         {% endif %}
     </div>
 </body>

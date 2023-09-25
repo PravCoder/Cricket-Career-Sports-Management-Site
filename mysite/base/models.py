@@ -38,6 +38,7 @@ class Game(models.Model):
     batting2_team = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True, related_name="batting2")
     bowling2_team  = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True, related_name="bowling2")
 
+    date = models.CharField(max_length=200,null=True)
     year = models.CharField(max_length=200,null=True)
     month = models.CharField(max_length=200,null=True)
     day = models.CharField(max_length=200,null=True)
@@ -171,7 +172,7 @@ class Player(AbstractUser):
     last_name = models.CharField(max_length=200, null=True)
     email = models.EmailField(unique=True, null=True)
 
-    team = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True)
+    team = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True) # long-term-team
     organization = models.ForeignKey(Organization,on_delete=models.SET_NULL,null=True, blank=True)
     runs = models.IntegerField(default=0,null=True,blank=True)
     wickets = models.IntegerField(default=0,null=True,blank=True)  
