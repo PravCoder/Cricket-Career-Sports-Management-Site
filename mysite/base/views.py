@@ -131,7 +131,7 @@ def home(request):
                 user.organizaiton = org
                 user.save()
             invite.delete()
-        print(org_decline, org_accept)
+        # IF ORGANIZATION INVITE IS DECLINED
         if org_decline:
             info = org_decline.split("#") # [org-id, invite-id]
             invite = OrganizationInvite.objects.get(id=int(info[1]))
@@ -339,7 +339,9 @@ def view_game(request, pk): # game.vids
 
         context = {"game":game}
         return render(request, "base/view_game.html", context)
-    
+    print("team 1 players: ")
+    for p in game.team1.players.all():
+        print(p.username)
     context = {"game":game}
     return render(request, "base/view_game.html", context)
     
@@ -414,7 +416,7 @@ def view_organization(request, pk):
     query_players = []
     if request.method == "POST":
         query = request.POST.get("search-players")
-        if query != None and query != "":
+        if query != None and query != "": 
             for p in Player.objects.all():
                 if query.lower() in p.username.lower() or query.lower() in p.first_name.lower() or query.lower() in p.last_name.lower():
                     query_players.append(p)
