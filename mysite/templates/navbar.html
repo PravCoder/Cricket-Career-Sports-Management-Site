@@ -57,7 +57,9 @@ body, ul {
   <div class="navbar-links">
     <a href="{% url 'player-career' request.user.id %}" class="navbar-link">Career</a>
     <a href="{% url 'game-history' %}" class="navbar-link">GameHistory</a></li>
+    {% if reqquest.user.team %}
     <a href="{% url 'team' request.user.team.id %}" class="navbar-link">MyTeam</a>  <!-- parameter is team id or none-->
+    {% endif %}
     <a href="{% url 'create-team' %}" class="navbar-link">Create Team</a>
     <a href="{% url 'create-organization' %}" class="navbar-link">Create Organization</a>
     <a href="{% url 'schedule-game' %}" class="navbar-link">Schedule Game</a>

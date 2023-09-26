@@ -50,11 +50,6 @@ def home(request):
         return render(request, "base/home.html", context)
     
     print("user team: " + str(user.team))
-    if user.team == None:
-        team = Team.objects.create(name="filler", filler=True)  # creating filler-team-obj for new user with no tea
-        user.team = team
-        user.save()
-        team.save()
 
     upcoming_games = []  # all games with completed=False
     for g in user.games.all():
@@ -521,11 +516,7 @@ def register_page(request):
         password2 = request.POST.get("password2")
         if first != None and last != None and username != None and email != None and password1 != None and password2 != None and password1==password2:
             user= Player.objects.create(first_name=first,last_name=last,username=username.lower(),email=email,password=password1)
-            team = Team.objects.create(name="filler", filler=True)  # creating filler-team-obj for new user with no team
-            team.filler = True
-            user.team = team
             user.save()
-            team.save()
             login(request, user)
             return redirect("home")
         else:
