@@ -64,7 +64,7 @@ def home(request):
     game_accept = request.POST.get("Accept Game")
     game_decline = request.POST.get("Decline Game")
     org_accept = request.POST.get("AcceptOrg")
-    org_decline = request.POST.get("AcceptDecline")
+    org_decline = request.POST.get("DeclineOrg")
     if request.method == "POST":
         # IF PLAYER ACCEPTS TEAM INVITE ADD PLAYER TO THE TEAM
         if team_accept:
@@ -130,6 +130,11 @@ def home(request):
                 prev_org.save()
                 user.organizaiton = org
                 user.save()
+            invite.delete()
+        print(org_decline, org_accept)
+        if org_decline:
+            info = org_decline.split("#") # [org-id, invite-id]
+            invite = OrganizationInvite.objects.get(id=int(info[1]))
             invite.delete()
 
     context = {"games":upcoming_games, "invites":invites, "game_invites":game_invites, "org_invites":org_invites}
@@ -423,39 +428,40 @@ def view_organization(request, pk):
         # get create short-term-team form fields
         # create both Team-obj: add all players to respective teams
         # create Game-obj: set team1,team2,date,location,overs
-        print(request.POST)
-        team1_name = request.POST.get("team1-name")
-        team2_name = request.POST.get("team2-name")
-        overs = int(request.POST.get("overs"))
-        game_date = request.POST.get("date")
-        team1_players = []
-        team2_players = []
-        for key, value in request.POST.items():
-            if "team1#" in key and value == "clicked":
-                p_id = int(key.split("#")[1])
-                team1_players.append(Player.objects.get(id=p_id))
-            if "team2#" in key and value == "clicked":
-                p_id = int(key.split("#")[1])
-                team2_players.append(Player.objects.get(id=p_id))
+        if (query == None or query == "") and add_player_id == None:
+            print(request.POST)
+            team1_name = request.POST.get("team1-name")
+            team2_name = request.POST.get("team2-name")
+            overs = int(request.POST.get("overs"))
+            game_date = request.POST.get("date")
+            team1_players = []
+            team2_players = []
+            for key, value in request.POST.items():
+                if "team1#" in key and value == "clicked":
+                    p_id = int(key.split("#")[1])
+                    team1_players.append(Player.objects.get(id=p_id))
+                if "team2#" in key and value == "clicked":
+                    p_id = int(key.split("#")[1])
+                    team2_players.append(Player.objects.get(id=p_id))
 
-        team1 = Team.objects.create(name=team1_name, temporary=True)
-        team2 = Team.objects.create(name=team2_name, temporary=True)
-        for player in team1_players:
-            team1.players.add(player)
-        for player in team2_players:
-            team2.players.add(player)
-        team1.save()
-        team2.save()
-        game = Game.objects.create(team1=team1, team2=team2, overs=overs, date=game_date)
-        game.save()
-        for player in game.team1.players.all():
-            player.games.add(game)
-            player.save()
-        for player in game.team2.players.all():
-            player.games.add(game)
-            player.save()
-        # dont set all players.team-attribute = team1
-        # when user returns to home page  gmae should be in upcoming-games list because entering_stats=False
+            team1 = Team.objects.create(name=team1_name, temporary=True)
+            team2 = Team.objects.create(name=team2_name, temporary=True)
+            for player in team1_players:
+                team1.players.add(player)
+            for player in team2_players:
+                team2.players.add(player)
+            team1.save()
+            team2.save()
+            game = Game.objects.create(team1=team1, team2=team2, overs=overs, date=game_date)
+            game.save()
+            for player in game.team1.players.all():
+                player.games.add(game)
+                player.save()
+            for player in game.team2.players.all():
+                player.games.add(game)
+                player.save()
+            # dont set all players.team-attribute = team1
+            # when user returns to home page  gmae should be in upcoming-games list because entering_stats=False
     
     user_in_org = False
     if request.user in list(org.members.all()):
