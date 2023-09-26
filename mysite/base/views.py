@@ -115,6 +115,7 @@ def home(request):
         if game_decline:
             inv = GameInvite.objects.get(id=game_decline)
             inv.delete()
+        # IF ORGANIZATION INVITE IS ACCEPTED
         if org_accept:
             info = org_accept.split("#") # [org-id, invite-id]
             invite = OrganizationInvite.objects.get(id=int(info[1]))
@@ -339,9 +340,9 @@ def view_game(request, pk): # game.vids
 
         context = {"game":game}
         return render(request, "base/view_game.html", context)
-    print("team 1 players: ")
-    for p in game.team1.players.all():
-        print(p.username)
+    print("team 1 stats: ")
+    for p in game.players_stats.all():
+        print(p.player.username)
     context = {"game":game}
     return render(request, "base/view_game.html", context)
     
@@ -436,6 +437,8 @@ def view_organization(request, pk):
             team2_name = request.POST.get("team2-name")
             overs = int(request.POST.get("overs"))
             game_date = request.POST.get("date")
+            location_game = request.POST.get("location")
+            time_game = request.POST.get("location")
             team1_players = []
             team2_players = []
             for key, value in request.POST.items():
@@ -454,8 +457,17 @@ def view_organization(request, pk):
                 team2.players.add(player)
             team1.save()
             team2.save()
-            game = Game.objects.create(team1=team1, team2=team2, overs=overs, date=game_date)
+            game = Game.objects.create(team1=team1, team2=team2, overs=overs, date=game_date, location=location_game, time=time_game)
             game.save()
+            # create stat-objects for each player and add to game.players_stats
+            for player in game.team1.players.all():
+                stat_line = PlayerGameStat.objects.create(game=game, player=player)
+                game.players_stats.add(stat_line)
+            for player in game.team2.players.all():
+                stat_line = PlayerGameStat.objects.create(game=game, player=player)
+                game.players_stats.add(stat_line)
+            game.save()
+            # add game to players.games
             for player in game.team1.players.all():
                 player.games.add(game)
                 player.save()
