@@ -31,6 +31,9 @@ class Game(models.Model):
     winner = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True, related_name="winner",blank=True)
     team1 = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True, related_name="team1")  # team that sent invite
     team2 = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True, related_name="team2")
+    # Short-term team within organization
+    team1_players = models.ManyToManyField("Player", related_name="team1_players", blank=True)
+    team2_players = models.ManyToManyField("Player", related_name="team2_players", blank=True)
 
     batting1_team = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True, related_name="batting1")
     bowling1_team = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True, related_name="bowling1")
