@@ -223,6 +223,7 @@
           <th>Balls</th>
           <th>Out</th>
         </tr>
+      {% if game.temporary == False %}
       <tbody>
         {% for player in game.batting1_team.players.all %}
           {% for stat in game.players_stats.all %}
@@ -239,6 +240,9 @@
           {% endfor %}
         {% endfor %}
       </tbody>
+      {% ig game.temporary == True %}
+
+      {%endif }
     </table>
     <!--BOWLING FIRST INNINGS-->
     <h3>Bowling</h3>
