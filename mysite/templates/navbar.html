@@ -62,6 +62,7 @@ body, ul {
     {% endif %}
     <a href="{% url 'create-team' %}" class="navbar-link">Create Team</a>
     <a href="{% url 'create-organization' %}" class="navbar-link">Create Organization</a>
+    <a href="{% url 'view-leaderboard' %}" class="navbar-link">Leaderboards</a>
     <a href="{% url 'schedule-game' %}" class="navbar-link">Schedule Game</a>
     <a href="{% url 'login' %}" class="navbar-link">Login/Register</a>
     <a href="{% url 'logout' %}"class="navbar-link">Logout</a>
@@ -75,6 +76,7 @@ body, ul {
     <a href="{% url 'unauthorized' %}" class="navbar-link">GameHistory</a>
     <a href="{% url 'unauthorized' %}" class="navbar-link">MyTeam</a>  <!-- parameter is team id or none-->
     <a href="{% url 'unauthorized' %}" class="navbar-link">Create Team</a>
+    <a href="{% url 'view-leaderboard' %}" class="navbar-link">Leaderboards</a>
     <a href="{% url 'unauthorized' %}" class="navbar-link">Schedule Game</a>
     <a href="{% url 'login' %}" class="navbar-link">Login/Register</a>
   </div>

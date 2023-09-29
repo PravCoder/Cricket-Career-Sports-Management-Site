@@ -13,7 +13,7 @@ def logout_user(request):
 def unauthorized(request):
     context = {}
     return render(request, "base/login_error_page.html", context)
-def reset(request):
+def reset(request): # resets the stats of each player and deletes all games & stats
     for player in Player.objects.all():
         player.runs = 0
         player.wickets = 0
@@ -457,7 +457,7 @@ def view_organization(request, pk):
                 team2.players.add(player)
             team1.save()
             team2.save()
-            game = Game.objects.create(team1=team1, team2=team2, overs=overs, date=game_date, location=location_game, time=time_game)
+            game = Game.objects.create(team1=team1, team2=team2, overs=overs, date=game_date, location=location_game, time=time_game, temporary=True)
             game.save()
             # create stat-objects for each player and add to game.players_stats
             for player in game.team1.players.all():
@@ -506,6 +506,21 @@ def schedule_game(request):
         return redirect("home")
     context = {}
     return render(request, "base/schedule_game.html", context)
+
+def view_leaderboard(request):
+    query_list = []
+    stat_attribute = ""
+    attributes = ["runs", "wickets","catches","sixes","fours","extras","games_played","games_won","win_percentage","fifties","centuries","runs_hs","wickets_hs","fours_hs","sixes_hs","runs_average","wickets_average","fours_average","sixes_average","catches_average","extras_average"]
+    if request.method == "POST":
+        stat_attribute = request.POST.get("search-stat")
+        for attribute in attributes:
+            if stat_attribute == attribute:
+                print("aa")
+                query_list = list(Player.objects.all().order_by('-'+attribute))
+        
+            
+    context = {"query_list":query_list, "stat_attribute":stat_attribute}
+    return render(request, "base/leaderboard.html", context)
 
 def login_page(request):
     page = "login"

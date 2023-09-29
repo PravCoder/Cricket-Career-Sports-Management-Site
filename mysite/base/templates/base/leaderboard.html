@@ -1,0 +1,206 @@
+{% extends 'main.html' %}
+
+
+{% block content %}
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+.search-container {
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.search-container input,
+.search-container select,
+.search-container button {
+    display: block;
+    margin-bottom: 10px;
+    width: calc(100% - 20px);
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.search-container button {
+    background-color: #1da1f2;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.search-container button:hover {
+    background-color: #0e75c2;
+}
+
+.results-container {
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+.player-list {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}
+
+.player-list li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.rank {
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: 20px;
+}
+
+.player-info img {
+    width: 80px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 20px;
+    color: rgb(0, 0, 0);
+}
+
+.player-info h4 {
+    margin: 0;
+}
+
+.player-info p {
+    margin: 5px 0;
+}
+.at-link {
+    color: rgb(0, 0, 0);
+}
+</style>
+<body>
+    <div class="search-container">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input type="text" id="search-box" name="search-box" placeholder="Search for players...">
+            <select id="search-stat" name="search-stat">
+                <option value="runs">Runs</option>
+                <option value="wickets">Wickets</option>
+                <option value="catches">Catches</option>
+                <option value="sixes">Sixes</option>
+                <option value="fours">Fours</option>
+                <option value="extras">Extras</option>
+                <option value="games_played">Games Played</option>
+                <option value="games_won">Games Won</option>
+                <option value="win_percentage">Win Percentage</option>
+                <option value="fifties">Fifties</option>
+                <option value="centuries">Centuries</option>
+                <option value="runs_hs">Runs High Score</option>
+                <option value="wickets_hs">Wickets High Score</option>
+                <option value="fours_hs">Fours High Score</option>
+                <option value="sixes_hs">Sixes High Score</option>
+                <option value="runs_average">Runs Average</option>
+                <option value="wickets_average">Wickets Average</option>
+                <option value="fours_average">Fours Average</option>
+                <option value="sixes_average">Sixes Average</option>
+                <option value="catches_average">Catches Average</option>
+                <option value="extras_average">Extras Average</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <div class="results-container">
+        <ul class="player-list">
+            {% for player in query_list %}
+            <li>
+                <div class="rank">{{ forloop.counter }}</div>
+                <div class="player-info">
+                    <img src="profile" alt="Profile Picture">
+                    <h4>{{player.first_name}} {{player.last_name}}</h4>
+                    <p><a href="{% url 'player-career' player.id %}" class="at-link">@{{player.username}}</a></p>
+                    {% if stat_attribute == "runs" %}
+                        <p>Runs: {{player.runs}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "wickets" %}
+                        <p>Wickets: {{player.wickets}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "catches" %}
+                        <p>Catches: {{player.catches}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "sixes" %}
+                        <p>Sixes: {{player.sixes}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "fours" %}
+                        <p>Fours: {{player.fours}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "extras" %}
+                        <p>Extras: {{player.extras}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "games_played" %}
+                        <p>Games Played: {{player.games_played}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "games_won" %}
+                        <p>Games Won: {{player.games_won}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "win_percentage" %}
+                        <p>Win Percentage: {{player.win_percentage}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "fifties" %}
+                        <p>Fifties: {{player.fifties}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "centuries" %}
+                        <p>Centuries: {{player.centuries}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "runs_hs" %}
+                        <p>Runs Highscore: {{player.runs_hs}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "wickets_hs" %}
+                        <p>Wicket Highscore: {{player.wickets_hs}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "fours_hs" %}
+                        <p>Fours Highscore: {{player.fours_hs}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "sixes_hs" %}
+                        <p>Sixes Highscore: {{player.sixes_hs}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "runs_average" %}
+                        <p>Runs Average: {{player.runs_average}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "wickets_average" %}
+                        <p>Wickets Average: {{player.wickets_average}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "fours_average" %}
+                        <p>Fours Average: {{player.fours_average}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "sixes_average" %}
+                        <p>Sixes Average: {{player.sixes_average}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "catches_average" %}
+                        <p>Catches Average: {{player.catches_average}}</p>
+                    {% endif %}
+                    {% if stat_attribute == "extras_average" %}
+                        <p>Extras Average: {{player.extras_average}}</p>
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+
+
+
+
+{% endblock %}

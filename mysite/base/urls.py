@@ -9,16 +9,14 @@ urlpatterns = [
     path("game-history/", views.game_history, name="game-history"),
     path("view-game/<str:pk>", views.view_game, name="view-game"),
     path("schedule-game/", views.schedule_game, name="schedule-game"),
+    path("create-organization/", views.create_organization, name="create-organization"),
+    path("view-organization/<str:pk>", views.view_organization, name="view-organization"),
+    path("view-leaderboard/", views.view_leaderboard, name="view-leaderboard"),
+
 
     path("login/", views.login_page, name="login"),
     path("register/", views.register_page, name="register"),
-
     path("logout/", views.logout_user, name="logout"),
-
     path("unauthorized/", views.unauthorized, name="unauthorized"),
-
-    path("create-organization/", views.create_organization, name="create-organization"),
-    path("view-organization/<str:pk>", views.view_organization, name="view-organization"),
-
     path("reset/", views.reset, name="reset"),
 ]
