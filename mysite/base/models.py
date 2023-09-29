@@ -156,9 +156,8 @@ class Game(models.Model):
 class GameInvite(models.Model): # for games outside of organization
     from_team = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True, related_name="from_team")
     to_team = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True, related_name="to_team")
-    year = models.CharField(max_length=200,null=True)
-    month = models.CharField(max_length=200,null=True)
-    day = models.CharField(max_length=200,null=True)
+
+    date = models.CharField(max_length=200,null=True)
     time = models.CharField(max_length=200,null=True)
     location = models.CharField(max_length=200,null=True)
     overs = models.IntegerField(default=0,null=True,blank=True)

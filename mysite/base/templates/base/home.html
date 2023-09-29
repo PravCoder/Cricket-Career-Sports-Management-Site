@@ -183,7 +183,7 @@ input[type=button], input[type=submit], input[type=reset] {
                     <h3>Game Invite</h3>
                     <div class="game-info">
                       <p><a href="{% url 'team' invite.from_team.id %}">{{invite.from_team.name}}</a> vs. <a href="{% url 'team' invite.to_team.id %}">{{invite.to_team.name}}</a></p>
-                      <p>Date: {{invite.day}}, {{invite.month}}, {{invite.year}}</p>
+                      <p>Date: {{invite.date}}</p>
                       <p>Time: {{invite.time}}</p>
                       <p>Location: {{invite.location}}</p>
                       <p>Overs: {{invite.overs}}</p>

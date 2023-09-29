@@ -91,7 +91,7 @@ def home(request):
         if game_accept:
             # get the game invite and create game-object
             inv = GameInvite.objects.get(id=game_accept)
-            game = Game.objects.create(team1=inv.from_team, team2=inv.to_team, year=inv.year,month=inv.month,day=inv.day,time=inv.time,location=inv.location,overs=inv.overs)
+            game = Game.objects.create(team1=inv.from_team, team2=inv.to_team, date=inv.date,time=inv.time,location=inv.location,overs=inv.overs)
             game.team1.games.add(game)
             game.team2.games.add(game)
             game.save()
@@ -488,16 +488,18 @@ def schedule_game(request):
     user = request.user
     if request.method == "POST":
         opp_team = request.POST.get("opp-team")
-        location = request.POST.get("address")
-        year = request.POST.get("year")
-        month = request.POST.get("month")
-        day = request.POST.get("day")
+        location = request.POST.get("location")
+
+        date = request.POST.get("date")
+        print("location: "+location)
         time = request.POST.get("time")
         overs = request.POST.get("overs")
-        if opp_team != None and location != None and year != None and month != None and day != None and time != None:
+        if opp_team != None and location != None and date != None and time != None:
+            print("Aaa")
             team2 = Team.objects.get(name=opp_team)
-            invite = GameInvite.objects.create(from_team=user.team, to_team=team2, year=year,month=month,day=day,time=time,location=location,overs=overs)
+            invite = GameInvite.objects.create(from_team=user.team, to_team=team2, date=date, time=time,location=location,overs=overs)
             invite.save()
+            print(invite.date)
             for player in team2.players.all():
                 player.game_invites.add(invite)
                 player.save()
