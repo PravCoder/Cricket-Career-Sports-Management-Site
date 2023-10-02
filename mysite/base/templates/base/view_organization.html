@@ -333,7 +333,6 @@ button[type="submit"]:hover {
                         {% for member in org.members.all %}
                             {{member.first_name}} {{member.last_name}} 
                             <input type="checkbox", value="clicked", name="team2#{{member.id}}">
-                    
                         {% endfor %}
                     </ul>
                 </div>
@@ -342,7 +341,27 @@ button[type="submit"]:hover {
             <button type="submit">Schedule Game</button>
         </form>
         {% endif %}
+    <br>
+    <br>
+    <br>
+    <h3>Create Long-term team:</h3>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <div class="player-pool">
+            <div class="team">
+                <h2><label for="team1-name">Enter new team name:</label><input type="text" id="new-team-name" name="new-team-name" required placeholder="new team name..."></h2>
+                <ul id="your-team" class="team-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                   {% for member in org.members.all %}
+                        {{member.first_name}} {{member.last_name}}
+                        <input type="checkbox", value="clicked", name="new-team#{{member.id}}">
+                   {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <button class="add-button" name="create-long-term-team" value="Not-None">Add to Organization</button>
+    </form>
     </div>
+    
 </body>
 </html>
 

@@ -10,6 +10,8 @@ class Organization(models.Model): # Club
     location = models.CharField(max_length=200,null=True)
     games = models.ManyToManyField("Game", related_name="org_games", blank=True)
 
+    teams = models.ManyToManyField("Team", related_name="org_teams", blank=True)
+
 class Team(models.Model):
     name = models.CharField(max_length=200,null=True)
     captain = models.OneToOneField("Player", related_name="captain",on_delete=models.SET_NULL,null=True,blank=True,unique=False)

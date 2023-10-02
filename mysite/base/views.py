@@ -415,7 +415,7 @@ def view_organization(request, pk):
             for p in Player.objects.all():
                 if query.lower() in p.username.lower() or query.lower() in p.first_name.lower() or query.lower() in p.last_name.lower():
                     query_players.append(p)
-        add_player_id = request.POST.get("add-player-org")
+        add_player_id = request.POST.get("add-player-org")  # to add player to organization
         if add_player_id != None:
             add_player = Player.objects.get(id=int(add_player_id))
             org_invite = OrganizationInvite.objects.create(organization=org)
@@ -425,8 +425,9 @@ def view_organization(request, pk):
         # get create short-term-team form fields
         # create both Team-obj: add all players to respective teams
         # create Game-obj: set team1,team2,date,location,overs
-        if (query == None or query == "") and add_player_id == None:
+        if request.POST.get("short-game-schedule") != None:
             print(request.POST)
+            # not adding Player.team.add(team) because this is short-team inside organization 
             team1_name = request.POST.get("team1-name")
             team2_name = request.POST.get("team2-name")
             overs = int(request.POST.get("overs"))
@@ -468,9 +469,28 @@ def view_organization(request, pk):
             for player in game.team2.players.all():
                 player.games.add(game)
                 player.save()
+            org.games.add(game)
+            org.save()
             # dont set all players.team-attribute = team1
             # when user returns to home page  gmae should be in upcoming-games list because entering_stats=False
-    
+        
+        create_long_team = request.POST.get("create-long-term-team")
+        print(create_long_team)
+        if (query == None or query=="") and create_long_team != None:
+            team_name = request.POST.get("new-team-name")
+            new_team = Team.objects.create(name=team_name)
+
+            for key, value in request.POST.items():
+                if "new-team#" in key and value == "clicked":
+                    p_id = int(key.split("#")[1])
+                    player = Player.objects.get(id=p_id)
+                    new_team.players.add(player)
+                    player.teams.add(new_team)
+                    new_team.save()
+                    player.save()
+            org.teams.add(new_team)
+            org.save()
+
     user_in_org = False
     if request.user in list(org.members.all()):
         user_in_org = True
@@ -485,7 +505,7 @@ def schedule_game(request):
         user_team = request.POST.get("user-team")
         location = request.POST.get("location")
         print(request.POST)
-        date = request.POST.get("date")
+        date = request.POST.get("date") 
         time = request.POST.get("time")
         overs = request.POST.get("overs")
         if opp_team != None and location != None and date != None and time != None:
