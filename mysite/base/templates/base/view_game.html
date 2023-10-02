@@ -122,6 +122,46 @@
       border-radius: 6px;
       cursor: pointer;
     }
+
+
+
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
+
+    .team-container {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .team {
+      width: 48%; /* Adjust the width as needed */
+    }
+
+    .team-name {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .player-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .player-list-item {
+      margin-bottom: 5px;
+    }
   </style>
 </head>
 <body>
@@ -159,7 +199,24 @@
       <option value="{{game.team1.id}}">{{game.team1.name}}</option>
       <option value="{{game.team2.id}}">{{game.team2.name}}</option>
     </select>
-
+    <div class="team-container">
+      <div class="team">
+          <div class="team-name">{{game.team1.name}}</div>
+          <ul class="player-list">
+              {% for p in game.team1.players.all %}
+              <li class="player-list-item">{{p.username}}</li>
+              {% endfor %}
+          </ul>
+      </div>
+      <div class="team">
+          <div class="team-name">{{game.team2.name}}</div>
+          <ul class="player-list">
+              {% for p in game.team2.players.all %}
+              <li class="player-list-item">{{p.username}}</li>
+              {% endfor %}
+          </ul>
+      </div>
+  </div>
     <!--CURRENT BOWLER SELECTOR-->
     <div class="bowler-selector">
       <label for="current-bowler">Select Current Bowler:</label>
