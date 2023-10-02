@@ -45,10 +45,11 @@ def reset(request): # resets the stats of each player and deletes all games & st
 
 def home(request):
     user = request.user
-    """for t in Team.objects.all():
-        if user in list(t.players.all()):
-            user.teams.add(t)
-            user.save()"""
+    """for u in Player.objects.all():
+        for t in Team.objects.all():
+            if u in list(t.players.all()):
+                u.teams.add(t)
+                u.save()"""
     if user.is_authenticated == False:
         context = {}
         return render(request, "base/home.html", context)
