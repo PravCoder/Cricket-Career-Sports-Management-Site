@@ -173,7 +173,8 @@ class Player(AbstractUser):
     last_name = models.CharField(max_length=200, null=True)
     email = models.EmailField(unique=True, null=True)
 
-    team = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True) # long-term-team
+    teams = models.ManyToManyField("Team", related_name="teams", blank=True) # long-term-team outside of organization
+
     organization = models.ForeignKey(Organization,on_delete=models.SET_NULL,null=True, blank=True)
     runs = models.IntegerField(default=0,null=True,blank=True)
     wickets = models.IntegerField(default=0,null=True,blank=True)  

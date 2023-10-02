@@ -45,12 +45,14 @@ def reset(request): # resets the stats of each player and deletes all games & st
 
 def home(request):
     user = request.user
+    """for t in Team.objects.all():
+        if user in list(t.players.all()):
+            user.teams.add(t)
+            user.save()"""
     if user.is_authenticated == False:
         context = {}
         return render(request, "base/home.html", context)
     
-    print("user team: " + str(user.team))
-
     upcoming_games = []  # all games with completed=False
     for g in user.games.all():
         if g.entering_stats == False:
@@ -76,7 +78,7 @@ def home(request):
             prev_team.players.remove(user)
             t1 = Team.objects.get(id=int(arr[0]))
             t1.players.add(user)
-            user.team = t1
+            user.teams.add(t1)
             user.save()
             t1.save()
             prev_team.save()
@@ -152,20 +154,12 @@ def player_career(request, pk):
 
 def team(request, pk):   # check is player doesn't have a team
     user = request.user
-    try:
-        team = Team.objects.get(id=pk)
-    except:
-        team = Team.objects.create(name="filler", filler=True)  # creating filler-team-obj for new user with no team
-        user.team = team
-        user.save()
-        team.save()
-        context = {"players":None, "team":team}
-        return render(request, "base/team.html", context)
+    team = Team.objects.get(id=pk)
 
     if request.method == "POST":
         username = request.POST.get("username")
         player = Player.objects.get(username=username)
-        team_invite = TeamInvite.objects.create(to_team=request.user.team)
+        team_invite = TeamInvite.objects.create(to_team=Player.team.objects.get(id=int(pk)))
         player.team_invites.add(team_invite)
         team_invite.save()
 
@@ -186,7 +180,6 @@ def create_team(request):  # long-term-team creation sets user.team-attribute
             t1.players.add(user)
             t1.captain = user
             t1.save()
-            user.team = t1
             user.save()
             return redirect("team", t1.id)
     context = {}
@@ -488,16 +481,18 @@ def schedule_game(request):
     user = request.user
     if request.method == "POST":
         opp_team = request.POST.get("opp-team")
+        user_team = request.POST.get("user-team")
         location = request.POST.get("location")
-
+        print(request.POST)
         date = request.POST.get("date")
-        print("location: "+location)
         time = request.POST.get("time")
         overs = request.POST.get("overs")
         if opp_team != None and location != None and date != None and time != None:
-            print("Aaa")
             team2 = Team.objects.get(name=opp_team)
-            invite = GameInvite.objects.create(from_team=user.team, to_team=team2, date=date, time=time,location=location,overs=overs)
+            print(user_team)
+            team1 = user.teams.get(name=user_team)
+            # select both teams
+            invite = GameInvite.objects.create(from_team=team1, to_team=team2, date=date, time=time,location=location,overs=overs)
             invite.save()
             print(invite.date)
             for player in team2.players.all():

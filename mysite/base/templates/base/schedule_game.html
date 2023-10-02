@@ -42,6 +42,9 @@
     <div class="sche-game-div">
       <form action="" method="POST">
         {% csrf_token %}
+        <label>Enter Your Team Name</label>
+        <input type="text" name="user-team" placeholder="enter team..." autocomplete="off">
+
         <label>Enter Opposing Team Name</label>
         <input type="text" name="opp-team" placeholder="enter team..." autocomplete="off">
 
