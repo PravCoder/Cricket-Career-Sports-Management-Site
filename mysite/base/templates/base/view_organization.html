@@ -275,7 +275,25 @@ button[type="submit"]:hover {
         </div>
         <br>
         <br>
+        <div class="players">
+            <h3>Teams</h3>
+            <ul>
+                {% for t in org.teams.all %}
+                    <li class="player">
+                        <img src="#" alt="Player 1">
+                        <div class="player-info">
+                            <h3>{{t.name}}</h3>
+                            <p><a href="{% url 'team' t.id %}" >view team</a></p>
+                            
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
         <br>
+        <br>
+        <br>
+        <hr>
         {% if user_in_org == True %}
         <h3>Add players to organization...</h3>
         <div class="search-container">
@@ -338,7 +356,7 @@ button[type="submit"]:hover {
                 </div>
             </div>
     
-            <button type="submit">Schedule Game</button>
+            <button type="submit" name="short-game-schedule" value="Not-None">Schedule Game</button>
         </form>
         {% endif %}
     <br>

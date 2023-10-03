@@ -422,9 +422,8 @@ def view_organization(request, pk):
             add_player.org_invites.add(org_invite)
             add_player.save()
             org_invite.save()
-        # get create short-term-team form fields
-        # create both Team-obj: add all players to respective teams
-        # create Game-obj: set team1,team2,date,location,overs
+        
+        # Schedule Short-Term Game within Organization
         if request.POST.get("short-game-schedule") != None:
             print(request.POST)
             # not adding Player.team.add(team) because this is short-team inside organization 
@@ -474,8 +473,8 @@ def view_organization(request, pk):
             # dont set all players.team-attribute = team1
             # when user returns to home page  gmae should be in upcoming-games list because entering_stats=False
         
+        # Create Long-Term Club Team within Organization
         create_long_team = request.POST.get("create-long-term-team")
-        print(create_long_team)
         if (query == None or query=="") and create_long_team != None:
             team_name = request.POST.get("new-team-name")
             new_team = Team.objects.create(name=team_name)

@@ -20,7 +20,7 @@ class Team(models.Model):
     games_won = models.IntegerField(default=0,null=True,blank=True)
     runs_average = models.FloatField(default=0,null=True,blank=True)
     wickets_average = models.FloatField(default=0,null=True,blank=True)
-
+    # organ
     games = models.ManyToManyField("Game", related_name="gammes", blank=True)
     temporary = models.BooleanField(default=False,null=True,blank=False)
 
