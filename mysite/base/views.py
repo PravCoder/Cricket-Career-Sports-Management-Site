@@ -219,17 +219,25 @@ def view_game(request, pk): # game.vids
                 game.batting2_team = game.team1
                 game.bowling2_team = game.team2
                 game.save()
+        print(request.POST)
         # THIS INFORMATION SHOULD BE EXTRACTED WHEN THE FIRST GAME INFO FORM IS SUBMITTED, AND WHEN EACH BALL IS SUBMITTED
+        """print("POST: " + str(request.POST))
+        print("On: " + game.on_strike_batsman.username)
+        print("Off: " + game.off_strike_batsman.username)
+        print("Bow: " + game.current_bowler.username)"""
         if request.POST.get("on-strike") != None:
             on_strike_batsman = Player.objects.get(id=int(request.POST.get("on-strike")))
+            print("1: "+on_strike_batsman.username)
             game.on_strike_batsman = on_strike_batsman
             onstrike_game_stat = on_strike_batsman.get_game_stat(game)
         if request.POST.get("off-strike") != None:
             off_strike_batsman = Player.objects.get(id=int(request.POST.get("off-strike")))
+            print("2: "+off_strike_batsman.username)
             game.off_strike_batsman = off_strike_batsman
             off_strike_batsman.get_game_stat(game)
         if request.POST.get("current-bowler") != None:
             current_bowler = Player.objects.get(id=int(request.POST.get("current-bowler")))
+            print("3: "+current_bowler.username)
             game.current_bowler = current_bowler
             bowler_game_stat = current_bowler.get_game_stat(game)
         game.save()
@@ -412,6 +420,7 @@ def view_organization(request, pk):
     if request.method == "POST":
         query = request.POST.get("search-players")
         if query != None and query != "": 
+            print("SEARCH PLAYESR")
             for p in Player.objects.all():
                 if query.lower() in p.username.lower() or query.lower() in p.first_name.lower() or query.lower() in p.last_name.lower():
                     query_players.append(p)
@@ -425,7 +434,7 @@ def view_organization(request, pk):
         
         # Schedule Short-Term Game within Organization
         if request.POST.get("short-game-schedule") != None:
-            print(request.POST)
+            print("SCHEDULE SHORT TERM GAME")
             # not adding Player.team.add(team) because this is short-team inside organization 
             team1_name = request.POST.get("team1-name")
             team2_name = request.POST.get("team2-name")
@@ -475,7 +484,8 @@ def view_organization(request, pk):
         
         # Create Long-Term Club Team within Organization
         create_long_team = request.POST.get("create-long-term-team")
-        if (query == None or query=="") and create_long_team != None:
+        if  request.POST.get("create-long-term-team") != None:
+            print("CREATE LONG TEAM")
             team_name = request.POST.get("new-team-name")
             new_team = Team.objects.create(name=team_name)
 
@@ -489,6 +499,34 @@ def view_organization(request, pk):
                     new_team.save()
                     player.save()
             org.teams.add(new_team)
+            org.save()
+        # Schedule Long-Term Team Club Game within Organization
+        if request.POST.get("schedule-long-game") != None:
+            print("SCHEDUELe XSLONG GAME")
+            print(request.POST)
+            team1 = Team.objects.get(id=int(request.POST.get("team1")))
+            team2 = Team.objects.get(id=int(request.POST.get("team2")))
+            overs = int(request.POST.get("overs"))
+            location = request.POST.get("location")
+            date = request.POST.get("date")
+            time = request.POST.get("time")
+            game = Game.objects.create(team1=team1, team2=team2, overs=overs,location=location,date=date,time=time,temporary=False)
+            # create stat-objects for each player and add to game.players_stats
+            for player in game.team1.players.all():
+                stat_line = PlayerGameStat.objects.create(game=game, player=player)
+                game.players_stats.add(stat_line)
+            for player in game.team2.players.all():
+                stat_line = PlayerGameStat.objects.create(game=game, player=player)
+                game.players_stats.add(stat_line)
+            game.save()
+            # add game to players.games
+            for player in game.team1.players.all():
+                player.games.add(game)
+                player.save()
+            for player in game.team2.players.all():
+                player.games.add(game)
+                player.save()
+            org.games.add(game)
             org.save()
 
     user_in_org = False
