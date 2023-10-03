@@ -23,6 +23,7 @@ class Team(models.Model):
     # organ
     games = models.ManyToManyField("Game", related_name="gammes", blank=True)
     temporary = models.BooleanField(default=False,null=True,blank=False)
+    organization = models.ForeignKey(Organization,on_delete=models.SET_NULL,null=True, related_name="winner",blank=True)
 
 
 class Game(models.Model):

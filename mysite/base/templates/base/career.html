@@ -169,7 +169,7 @@ body {
             <img class="team-logo" src="#" alt="Team 1 Logo">
             <div class="team-info">
                 <h3><a class="team-link" href="{% url 'team' team.id %}">{{team.name}}</a></h3>
-                <p>Organization: TBD</p>
+                <p>Organization: {{team.organization.name}}</p>
             </div>
         </li>
         <hr>

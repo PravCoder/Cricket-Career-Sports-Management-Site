@@ -484,6 +484,7 @@ def view_organization(request, pk):
                     p_id = int(key.split("#")[1])
                     player = Player.objects.get(id=p_id)
                     new_team.players.add(player)
+                    new_team.organization = org
                     player.teams.add(new_team)
                     new_team.save()
                     player.save()
