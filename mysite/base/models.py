@@ -16,14 +16,46 @@ class Team(models.Model):
     name = models.CharField(max_length=200,null=True)
     captain = models.OneToOneField("Player", related_name="captain",on_delete=models.SET_NULL,null=True,blank=True,unique=False)
     players = models.ManyToManyField("Player", related_name="players", blank=True)
-    games_played = models.IntegerField(default=0,null=True,blank=True)
-    games_won = models.IntegerField(default=0,null=True,blank=True)
     runs_average = models.FloatField(default=0,null=True,blank=True)
     wickets_average = models.FloatField(default=0,null=True,blank=True)
-    # organ
+    win_percentage = models.FloatField(default=0)
+    # organzation
     games = models.ManyToManyField("Game", related_name="gammes", blank=True)
     temporary = models.BooleanField(default=False,null=True,blank=False)
     organization = models.ForeignKey(Organization,on_delete=models.SET_NULL,null=True, related_name="winner",blank=True)
+
+    @property
+    def update_team_stats(self):
+        games_won = 0
+        total_games = len(list(self.games.all()))
+        total_runs = 0
+        total_wickets = 0
+        for g in self.games.all():
+            print(g.winner.name)
+            if g.winner == self:
+                print("is winner")
+                games_won += 1
+            if g.batting1_team == self:
+                total_runs +=  g.batting_score1
+            if g.batting2_team == self:
+                total_runs +=  g.batting_score2
+            if g.bowling1_team == self:
+                total_wickets += g.bowling_score1
+            if g.bowling2_team == self:
+                total_wickets += g.bowling_score2
+        if total_games != 0:
+            self.win_percentage = round(games_won/total_games, 2)*100
+            self.runs_average = round(total_runs/total_games, 2)
+            self.wickets_average = round(total_wickets/total_games, 2)
+        if total_games == 0:
+            self.win_perecentage = 0
+
+
+        
+        self.save()
+    @property
+    def get_num_games(self):
+        return len(self.games.all())
 
 
 class Game(models.Model):

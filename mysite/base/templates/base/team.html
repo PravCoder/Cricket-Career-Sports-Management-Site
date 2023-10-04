@@ -63,15 +63,13 @@ input[type=button], input[type=submit], input[type=reset] {
 <table class="center">
     <tr>
       <th>Games</th>
-      <th>Won</th>
       <th>Win%</th>
       <th>Runs Ave</th>
       <th>Wckts Ave</th>
     </tr>
     <tr>
-      <td>{{team.games_played}}</td>
-      <td>{{team.games_won}}</td>
-      <td>{{win_percentage}}</td>
+      <td>{{team.get_num_games}}</td>
+      <td>{{team.win_percentage}}</td>
       <td>{{team.runs_average}}</td>
       <td>{{team.wickets_average}}</td>
     </tr>

@@ -167,11 +167,12 @@ def team(request, pk):   # check is player doesn't have a team
         team_invite.save()
 
     players = team.players
-    if team.games_played != 0 or team.games_played != 0:
+    """if team.games_played != 0 or team.games_played != 0:
         win_percentage = round(team.games_won/team.games_played *100)
     else:
-        win_percentage = 0
-    context = {"players":players.all(), "team":team, "win_percentage":win_percentage}
+        win_percentage = 0"""
+    team.update_team_stats
+    context = {"players":players.all(), "team":team}
     return render(request, "base/team.html", context)
 
 def create_team(request):  # long-term-team creation sets user.team-attribute
@@ -208,6 +209,7 @@ def view_game(request, pk): # game.vids
             print("SETTING ORDER OF GAME: " + str(int(request.POST.get("batted-first-innings"))))
             batted_first_innings_id = int(request.POST.get("batted-first-innings"))
             if game.team1.id == batted_first_innings_id:
+                game.team1.games.add(game) # add game to team.games
                 game.entering_stats = True
                 game.batting1_team = game.team1 
                 game.bowling1_team = game.team2
@@ -215,6 +217,7 @@ def view_game(request, pk): # game.vids
                 game.bowling2_team = game.team1
                 game.save()
             if game.team2.id == batted_first_innings_id:   # filling with empty stat-objs
+                game.team2.games.add(game)
                 game.entering_stats = True
                 game.batting1_team = game.team2
                 game.bowling1_team = game.team1
@@ -333,6 +336,8 @@ def view_game(request, pk): # game.vids
             game.on_strike_batsman = None
             game.off_strike_batsman = None
             game.current_bowler = None
+            game.team1.update_team_stats
+            game.team2.update_team_stats
             game.save()
             game.update_players_career_stats
             game.confirm_winner
@@ -340,7 +345,7 @@ def view_game(request, pk): # game.vids
             game.save()
             return redirect("home")
 
-         # IF GAME HAS BEEN STARTED
+        # IF GAME HAS BEEN STARTED
         if game.entering_stats == False:
             print("GAME COMPLETED IS FALSE")
             context = {"game":game}

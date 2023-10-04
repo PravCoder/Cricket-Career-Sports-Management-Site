@@ -355,7 +355,7 @@ select {
             {% for game in org.games.all %}
                 <a href="{% url 'view-game' game.id %}">
                 <div class="card">
-                    <div class="game-container">
+                    <div class="game-container"> 
                             <h4>{{game.team1.name}} vs. {{game.team2.name}}</h4>
                             <h5>{{game.location}}, {{game.date}}, {{game.time}}</h5>
                     </div>
