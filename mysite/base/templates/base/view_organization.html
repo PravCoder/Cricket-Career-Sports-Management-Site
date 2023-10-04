@@ -260,6 +260,15 @@ background-color: #0e75c2;
     border-radius: 5px;
     margin-top: 50px;
 }
+.game-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    margin-top: 25px;
+}
 
 h1, h2 {
     text-align: center;
@@ -338,6 +347,21 @@ select {
                     </li>
                 {% endfor %}
             </ul>
+        </div>
+        <br>
+        <br>
+        <div class="players">
+            <h3>Club Games</h3>
+            {% for game in org.games.all %}
+                <a href="{% url 'view-game' game.id %}">
+                <div class="card">
+                    <div class="game-container">
+                            <h4>{{game.team1.name}} vs. {{game.team2.name}}</h4>
+                            <h5>{{game.location}}, {{game.date}}, {{game.time}}</h5>
+                    </div>
+                </div>
+                </a>
+            {% endfor %}
         </div>
         <br>
         <br>

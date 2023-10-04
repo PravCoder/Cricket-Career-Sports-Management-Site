@@ -221,7 +221,7 @@ class Player(AbstractUser):
 
     @property
     def set_win_percentage(self):
-        self.win_percentage = self.games_won/self.games_played
+        self.win_percentage = round(self.games_won/self.games_played, 2)
         self.save()
 
     def get_game_stat(self, game):
@@ -239,12 +239,12 @@ class Player(AbstractUser):
             self.wickets_hs = stat.wickets
         self.save()
     def update_career_averages(self):
-        self.runs_average = self.runs /self.games_played
-        self.wickets_average = self.wickets /self.games_played
-        self.fours_average = self.fours /self.games_played
-        self.sixes_average = self.sixes /self.games_played
-        self.catches_average = self.catches /self.games_played
-        self.extras_average = self.extras /self.games_played
+        self.runs_average = round(self.runs /self.games_played, 2)
+        self.wickets_average = round(self.wickets /self.games_played, 2)
+        self.fours_average = round(self.fours /self.games_played, 2)
+        self.sixes_average = round(self.sixes /self.games_played, 2)
+        self.catches_average = round(self.catches /self.games_played, )
+        self.extras_average = round(self.extras /self.games_played, 2)
         self.save()
 
 

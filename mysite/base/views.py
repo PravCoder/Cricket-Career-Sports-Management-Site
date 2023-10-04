@@ -15,7 +15,9 @@ def unauthorized(request):
     return render(request, "base/login_error_page.html", context)
 def reset(request): # resets the stats of each player and deletes all games & stats
     for player in Player.objects.all():
-        player.runs = 0
+        player.set_win_percentage
+        player.update_career_averages()
+        """player.runs = 0
         player.wickets = 0
         player.catches = 0
         player.fours = 0
@@ -34,12 +36,12 @@ def reset(request): # resets the stats of each player and deletes all games & st
         player.sixes_average = 0
         player.catches_average = 0
         player.extras_average = 0
-        player.balls_played = 0
+        player.balls_played = 0"""
         player.save()
-    for game in Game.objects.all():
-        game.delete()
-    for stat in PlayerGameStat.objects.all():
-        stat.delete()
+    # for game in Game.objects.all():
+    #     game.delete()
+    # for stat in PlayerGameStat.objects.all():
+    #     stat.delete()
     context = {}
     return render(request, "base/home.html", context)
 
