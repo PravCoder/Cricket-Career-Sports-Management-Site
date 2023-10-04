@@ -300,6 +300,7 @@ def view_game(request, pk): # game.vids
                     fielder = Player.objects.get(id=int(request.POST.get("fielder")))  # TODO: select fielder who caught 
                     fielder.catches += 1
                     onstrike_game_stat.out_type = "bowled "+str(current_bowler.username)+", catch " +str(fielder.username)
+                    fielder.save()
 
                 bowler_game_stat.wickets += 1   
                 bowler_game_stat.balls_bowled += 1  
@@ -327,6 +328,9 @@ def view_game(request, pk): # game.vids
         if request.POST.get("finish_game") != None:
             print("Finish the game")
             game.archived = True  # moves game to game_history
+            game.on_strike_batsman = None
+            game.off_strike_batsman = None
+            game.current_bowler = None
             game.save()
             game.update_players_career_stats
             game.confirm_winner
@@ -502,7 +506,7 @@ def view_organization(request, pk):
             org.save()
         # Schedule Long-Term Team Club Game within Organization
         if request.POST.get("schedule-long-game") != None:
-            print("SCHEDUELe XSLONG GAME")
+            print("SCHEDUELe LONG CLUB GAME")
             print(request.POST)
             team1 = Team.objects.get(id=int(request.POST.get("team1")))
             team2 = Team.objects.get(id=int(request.POST.get("team2")))
