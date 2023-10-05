@@ -169,7 +169,13 @@ body {
             <img class="team-logo" src="#" alt="Team 1 Logo">
             <div class="team-info">
                 <h3><a class="team-link" href="{% url 'team' team.id %}">{{team.name}}</a></h3>
-                <p>Organization: {{team.organization.name}}</p>
+                {% if team.organization != None %}
+                  <p>Organization: <a href="{% url 'view-organization' team.organization.id %}">{{team.organization.name}}</a></p>
+                {% endif %}
+                {% if team.organization == None %}
+                  <p>Organization: team is not part of organization</p>
+                {% endif %}
+
             </div>
         </li>
         <hr>

@@ -171,7 +171,7 @@
 </div>
 <div class="game-info">
   <h2>Game Information</h2>
-  <p>Teams: {{game.team1.name}} vs {{game.team2.name}}</p>
+  <p>Teams: <a href="{% url 'team' game.team1.id %}">{{game.team1.name}}</a> vs <a href="{% url 'team' game.team2.id %}">{{game.team2.name}}</a></p>
   <p>Location: {{game.location}}</p>
   <p>Date: {{game.date}}</p>
   <p>Time: {{game.time}}</p>

@@ -31,7 +31,6 @@ class Team(models.Model):
         total_runs = 0
         total_wickets = 0
         for g in self.games.all():
-            print(g.winner.name)
             if g.winner == self:
                 print("is winner")
                 games_won += 1
