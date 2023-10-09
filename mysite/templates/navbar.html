@@ -1,94 +1,99 @@
 <style>
-  body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-  }
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
 
-  header {
-      background-color: #333;
-      color: #fff;
-      padding: 10px 0;
-  }
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+}
 
-  nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-  }
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
 
-  .logo img {
-      width: 40px;
-      margin-right: 10px;
-  }
+.logo img {
+    width: 40px;
+    margin-right: 10px;
+}
 
-  .navbar a {
-      color: #fff;
-      text-decoration: none;
-      margin: 0 5px;
-  }
+.navbar a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 5px;
+}
 
-  .hero {
-      background-color: #f0f0f0;
-      text-align: center;
-      padding: 50px 0;
-  }
+.hero {
+    background-color: #f0f0f0;
+    text-align: center;
+    padding: 50px 0;
+}
 
-  .search-bar {
-      margin-top: 20px;
-  }
+.search-bar {
+    margin-top: 20px;
+}
 
-  .search-bar input,
-  .search-bar select,
-  .search-bar button {
-      margin: 10px;
-      padding: 10px;
-      font-size: 16px;
-  }
+.search-bar input,
+.search-bar select,
+.search-bar button {
+    margin: 10px;
+    padding: 10px;
+    font-size: 16px;
+}
 
-  .sections {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px 20px;
-  }
+.sections {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
 
-  .section {
-      width: 30%;
-      margin: 0 20px;
-      padding: 20px;
-      background-color: #f9f9f9;
-      border-radius: 10px;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  }
+.section {
+    width: 30%;
+    margin: 0 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
 
-  .section h2 {
-      font-size: 24px;
-      margin-bottom: 10px;
-  }
+.section h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
 
-  footer {
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      padding: 10px 0;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-  }
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.home-link {
+  color: white;
+  text-decoration: none;
+}
 </style>
 
 {% if request.user.is_authenticated == True %}
 <header>
   <nav>
       <div class="logo">
-          <img src="logo.png" alt="Logo">
-          <span>Cricket Management</span>
+          <a href="{% url 'home' %}" class="home-link"><span><img src="logo.png" alt="Logo"></span></a>
+          <a href="{% url 'home' %}" class="home-link"><span>Cricket Management</span></a>
       </div>
       <div class="navbar">
         <a href="{% url 'player-career' request.user.id %}">Career</a>

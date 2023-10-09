@@ -134,6 +134,89 @@ input[type=button], input[type=submit], input[type=reset] {
 .view-details-button:hover {
     background-color: #2980b9;
 }
+
+
+
+
+
+/* NEW STYLES */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo img {
+    width: 40px;
+    margin-right: 10px;
+}
+
+
+.hero {
+    background-color: #f0f0f0;
+    text-align: center;
+    padding: 50px 0;
+}
+
+.search-bar {
+    margin-top: 20px;
+}
+
+.search-bar input,
+.search-bar select,
+.search-bar button {
+    margin: 10px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.sections {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.section {
+    width: 30%;
+    margin: 0 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.section h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
 </style>
 <div class="home-container">
     <h1>About Cricket Career</h1>
@@ -143,81 +226,82 @@ input[type=button], input[type=submit], input[type=reset] {
         <p>At Cricket Career, we believe that cricket is more than just a sport—it's a way of life. We're dedicated to fostering a sense of camaraderie and sportsmanship within the cricket community, where players of all skill levels can come together to share their passion for the game.</p>
         <p>Join us on this exciting journey as we redefine the way cricket is played, managed, and celebrated. Let's make every match a memorable experience and every player a cricketing star!</p>
     </div>
-        <p>Refresh by clicking home to see new invitations</p>
-        <h1>Upcoming Games:</h1>
-        <div>
-            {% for game in games %}
-                <div class="upcoming-game-card">
-                    <h3>Upcoming Game!</h3>
-                    <div class="game-teams">
-                        <p>{{game.team1.name}} vs. {{game.team2.name}}</p>
-                    </div>
-                    <div class="buttons">
-                        <a  class="view-details-button" href="{% url 'view-game' game.id %}">View Details</a>
-                    </div>
+    <!-- NOTIFICATIONS -->
+    <p>Refresh by clicking home to see new invitations</p>
+    <h1>Upcoming Games:</h1>
+    <div>
+        {% for game in games %}
+            <div class="upcoming-game-card">
+                <h3>Upcoming Game!</h3>
+                <div class="game-teams">
+                    <p>{{game.team1.name}} vs. {{game.team2.name}}</p>
                 </div>
-                <!--
-                <h4><a href="{% url 'view-game' game.id %}">{{game.team1.name}} vs. {{game.team2.name}}</h5></a>
-                -->  
-            {% endfor %}
-        </div>
-        <h1>Game Invites: </h1>
-        <div>
-            {% for invite in game_invites %}
-                <div class="game-card">
-                    <h3>Game Invite</h3>
-                    <div class="game-info">
-                      <p><a href="{% url 'team' invite.from_team.id %}">{{invite.from_team.name}}</a> vs. <a href="{% url 'team' invite.to_team.id %}">{{invite.to_team.name}}</a></p>
-                      <p>Date: {{invite.date}}</p>
-                      <p>Time: {{invite.time}}</p>
-                      <p>Location: {{invite.location}}</p>
-                      <p>Overs: {{invite.overs}}</p>
-                    </div>
-                    <form method="POST" action="" id="invite-form" class="buttons">  
-                        {% csrf_token %}
-                        <button name="Accept Game" value="{{invite.id}}" type="submit" class="accept-button">Accept</button>
-                        <button name="Decline Game" value="{{invite.id}}" type="submit" class="decline-button">Decline</button>
-                    </form>
-                </div>
-            {% endfor %}
-
-        <h3>Join Team Invites:</h3>
-        <div>
-            {% for invite in invites %}
-                <div class="game-card">
-                    <a href="{% url 'team' invite.to_team.id %}"><h4>{{invite.to_team.name}}</h4></a> 
-                    <form method="POST" action="" id="invite-form">  
-                        {% csrf_token %} <!--TEAM-->
-                        <button name="Accept" value="{{invite.to_team.id}}#{{invite.id}}" type="submit">Accept</button>
-                        <button name="Decline" value="{{invite.to_team.id}}#{{invite.id}}" type="submit">Decline</button>
-                    </form>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-        <h3>Join Organization Invites:</h3>
-        <div>
-            {% for invite in org_invites %}
-                <div class="game-card">
-                    <a href="{% url 'view-organization' invite.organization.id %}"><h4>{{invite.organization.name}}</h4></a> 
-                    <p>Wants to invite you to join their organization!</p>
-                    <form method="POST" action="" id="invite-form">  
-                        {% csrf_token %}
-                        <button name="AcceptOrg" value="{{invite.organization.id}}#{{invite.id}}" type="submit">Accept</button>
-                        <button name="DeclineOrg" value="{{invite.organization.id}}#{{invite.id}}" type="submit">Decline</button>
-                    </form>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-        {% for post in posts %}
-            <div class="card">
-                <div class="container">
-                        <h4>post.message</h4>
+                <div class="buttons">
+                    <a  class="view-details-button" href="{% url 'view-game' game.id %}">View Details</a>
                 </div>
             </div>
-            </a>
+            <!--
+            <h4><a href="{% url 'view-game' game.id %}">{{game.team1.name}} vs. {{game.team2.name}}</h5></a>
+            -->  
         {% endfor %}
+    </div>
+    <h1>Game Invites: </h1>
+    <div>
+        {% for invite in game_invites %}
+            <div class="game-card">
+                <h3>Game Invite</h3>
+                <div class="game-info">
+                    <p><a href="{% url 'team' invite.from_team.id %}">{{invite.from_team.name}}</a> vs. <a href="{% url 'team' invite.to_team.id %}">{{invite.to_team.name}}</a></p>
+                    <p>Date: {{invite.date}}</p>
+                    <p>Time: {{invite.time}}</p>
+                    <p>Location: {{invite.location}}</p>
+                    <p>Overs: {{invite.overs}}</p>
+                </div>
+                <form method="POST" action="" id="invite-form" class="buttons">  
+                    {% csrf_token %}
+                    <button name="Accept Game" value="{{invite.id}}" type="submit" class="accept-button">Accept</button>
+                    <button name="Decline Game" value="{{invite.id}}" type="submit" class="decline-button">Decline</button>
+                </form>
+            </div>
+        {% endfor %}
+
+    <h3>Join Team Invites:</h3>
+    <div>
+        {% for invite in invites %}
+            <div class="game-card">
+                <a href="{% url 'team' invite.to_team.id %}"><h4>{{invite.to_team.name}}</h4></a> 
+                <form method="POST" action="" id="invite-form">  
+                    {% csrf_token %} <!--TEAM-->
+                    <button name="Accept" value="{{invite.to_team.id}}#{{invite.id}}" type="submit">Accept</button>
+                    <button name="Decline" value="{{invite.to_team.id}}#{{invite.id}}" type="submit">Decline</button>
+                </form>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <h3>Join Organization Invites:</h3>
+    <div>
+        {% for invite in org_invites %}
+            <div class="game-card">
+                <a href="{% url 'view-organization' invite.organization.id %}"><h4>{{invite.organization.name}}</h4></a> 
+                <p>Wants to invite you to join their organization!</p>
+                <form method="POST" action="" id="invite-form">  
+                    {% csrf_token %}
+                    <button name="AcceptOrg" value="{{invite.organization.id}}#{{invite.id}}" type="submit">Accept</button>
+                    <button name="DeclineOrg" value="{{invite.organization.id}}#{{invite.id}}" type="submit">Decline</button>
+                </form>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% for post in posts %}
+        <div class="card">
+            <div class="container">
+                    <h4>post.message</h4>
+            </div>
+        </div>
+        </a>
+    {% endfor %}
     </div>
 </div>
 
