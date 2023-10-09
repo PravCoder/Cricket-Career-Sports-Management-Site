@@ -1,86 +1,128 @@
-
 <style>
-/* Navigation bar styles */
-body, ul {
+  body {
+      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-    }
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: rgb(22, 144, 56);
-  color: #41ce37;
-  padding: 30px 20px;
-}
+  }
 
-.navbar-logo {
-  font-size: 24px;
-  font-weight: bold;
-  color: white;
-}
+  header {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 0;
+  }
 
-.navbar-links {
-  display: flex;
-  align-items: center;
-}
+  nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+  }
 
-.navbar-link {
-  margin-right: 20px;
-  color: #fff;
-  text-decoration: none;
-}
+  .logo img {
+      width: 40px;
+      margin-right: 10px;
+  }
 
-.navbar-profile {
-  display: flex;
-  align-items: center;
-}
+  .navbar a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 5px;
+  }
 
-.profile-picture {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-right: 10px;
-}
+  .hero {
+      background-color: #f0f0f0;
+      text-align: center;
+      padding: 50px 0;
+  }
 
-.picture {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+  .search-bar {
+      margin-top: 20px;
+  }
+
+  .search-bar input,
+  .search-bar select,
+  .search-bar button {
+      margin: 10px;
+      padding: 10px;
+      font-size: 16px;
+  }
+
+  .sections {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+  }
+
+  .section {
+      width: 30%;
+      margin: 0 20px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .section h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+  }
+
+  footer {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 10px 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+  }
 </style>
 
 {% if request.user.is_authenticated == True %}
-<nav class="navbar">
-  <a class="active" href="{% url 'home' %}" class="navbar-link">Home</a>
-  <div class="navbar-links">
-    <a href="{% url 'player-career' request.user.id %}" class="navbar-link">Career</a>
-    <a href="{% url 'game-history' %}" class="navbar-link">GameHistory</a></li>
-    {% if request.user.team %}
-    <a href="{% url 'team' request.user.team.id %}" class="navbar-link">MyTeam</a>  <!-- parameter is team id or none-->
-    {% endif %}
-    <a href="{% url 'create-team' %}" class="navbar-link">Create Team</a>
-    <a href="{% url 'create-organization' %}" class="navbar-link">Create Organization</a>
-    <a href="{% url 'view-leaderboard' %}" class="navbar-link">Leaderboards</a>
-    <a href="{% url 'schedule-game' %}" class="navbar-link">Schedule Game</a>
-    <a href="{% url 'login' %}" class="navbar-link">Login/Register</a>
-    <a href="{% url 'logout' %}"class="navbar-link">Logout</a>
-  </div>
-</nav>
+<header>
+  <nav>
+      <div class="logo">
+          <img src="logo.png" alt="Logo">
+          <span>Cricket Management</span>
+      </div>
+      <div class="navbar">
+        <a href="{% url 'player-career' request.user.id %}">Career</a>
+        <a href="{% url 'game-history' %}" >GameHistory</a></li>
+        {% if request.user.team %}
+        <a href="{% url 'team' request.user.team.id %}" >MyTeam</a>  <!-- parameter is team id or none-->
+        {% endif %}
+        <a href="{% url 'create-team' %}" >Create Team</a>
+        <a href="{% url 'create-organization' %}" >Create Organization</a>
+        <a href="{% url 'view-leaderboard' %}" >Leaderboards</a>
+        <a href="{% url 'schedule-game' %}" >Schedule Game</a>
+        <a href="{% url 'login' %}" >Login/Register</a>
+        <a href="{% url 'logout' %}"">Logout</a>
+      </div>
+  </nav>
+</header>
 {% elif request.user.is_authenticated  == False %}
-<nav class="navbar">
-  <a class="active" href="{% url 'unauthorized' %}" class="navbar-link">Home</a>
-  <div class="navbar-links">
-    <a href="{% url 'unauthorized' %}" class="navbar-link">Career</a>
-    <a href="{% url 'unauthorized' %}" class="navbar-link">GameHistory</a>
-    <a href="{% url 'unauthorized' %}" class="navbar-link">MyTeam</a>  <!-- parameter is team id or none-->
-    <a href="{% url 'unauthorized' %}" class="navbar-link">Create Team</a>
-    <a href="{% url 'view-leaderboard' %}" class="navbar-link">Leaderboards</a>
-    <a href="{% url 'unauthorized' %}" class="navbar-link">Schedule Game</a>
-    <a href="{% url 'login' %}" class="navbar-link">Login/Register</a>
-  </div>
-</nav>
+<header>
+  <nav>
+      <div class="logo">
+          <img src="logo.png" alt="Logo">
+          <span>Cricket Management</span>
+      </div>
+      <div class="navbar">
+        <a href="{% url 'unauthorized' %}" class="navbar-link">Career</a>
+        <a href="{% url 'unauthorized' %}" class="navbar-link">GameHistory</a>
+        <a href="{% url 'unauthorized' %}" class="navbar-link">MyTeam</a>  <!-- parameter is team id or none-->
+        <a href="{% url 'unauthorized' %}" class="navbar-link">Create Team</a>
+        <a href="{% url 'view-leaderboard' %}" class="navbar-link">Leaderboards</a>
+        <a href="{% url 'unauthorized' %}" class="navbar-link">Schedule Game</a>
+        <a href="{% url 'login' %}" class="navbar-link">Login/Register</a>
+      </div>
+  </nav>
+</header>
 {% endif %}
 
 <h2>Welcome, {{request.user.username}}</h2>

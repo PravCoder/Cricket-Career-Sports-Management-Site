@@ -431,7 +431,6 @@ def view_organization(request, pk):
     if request.method == "POST":
         query = request.POST.get("search-players")
         if query != None and query != "": 
-            print("SEARCH PLAYESR")
             for p in Player.objects.all():
                 if query.lower() in p.username.lower() or query.lower() in p.first_name.lower() or query.lower() in p.last_name.lower():
                     query_players.append(p)
@@ -571,6 +570,7 @@ def schedule_game(request):
         return redirect("home")
     context = {}
     return render(request, "base/schedule_game.html", context)
+
 
 def view_leaderboard(request):
     query_list = []
