@@ -1,0 +1,107 @@
+{% extends 'main.html' %}
+{% load static %}
+
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px;
+        }
+
+        #query-type,
+        #search-input,
+        #search-button {
+            margin: 0 10px;
+        }
+
+        .result-box {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .result-box img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .result-box h2 {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <div class="search-container">
+            <select id="query-type" name="query-type">
+                <option value="player">Player</option>
+                <option value="team">Team</option>
+                <option value="organization">Organization</option>
+            </select>
+            <input type="text" id="entered-query" name="entered-query" placeholder="Enter your query...">
+            <button id="search-button">Search</button>
+        </div>
+    </form>
+
+    <div class="results-container" id="results-container">
+        {% if query_type == "player" %}
+            {% for p in results %}
+                <div class="result-box">
+                    <img src="player1.jpg" alt="Player 1">
+                    <h2>{{p.first_name}} {{p.last_name}}</h2>
+                    <p>Username: {{p.username}}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if query_type == "team" %}
+            {% for t in results %}
+                <div class="result-box">
+                    <img src="player1.jpg" alt="Player 1">
+                    <h2>{{t.name}}</h2>
+                    <p>Organization: {{t.organization}}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if query_type == "organization" %}
+            {% for o in results %}
+                <div class="result-box">
+                    <img src="player1.jpg" alt="Player 1">
+                    <h2>{{o.name}}</h2>
+                    <p>Members: {{o.get_num_members}}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+    </div>
+</body>
+
+</html>
+
+
+{% endblock %}

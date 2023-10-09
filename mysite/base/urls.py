@@ -13,6 +13,8 @@ urlpatterns = [
     path("view-organization/<str:pk>", views.view_organization, name="view-organization"),
     path("view-leaderboard/", views.view_leaderboard, name="view-leaderboard"),
 
+    path("search/entered_query=<str:entered_query>/query_type=<str:query_type>", views.search, name="search"),
+
 
     path("login/", views.login_page, name="login"),
     path("register/", views.register_page, name="register"),

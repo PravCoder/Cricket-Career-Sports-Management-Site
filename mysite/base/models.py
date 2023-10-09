@@ -12,6 +12,10 @@ class Organization(models.Model): # Club
 
     teams = models.ManyToManyField("Team", related_name="org_teams", blank=True)
 
+    @property
+    def get_num_members(self):
+        return len(self.members.all())
+
 class Team(models.Model):
     name = models.CharField(max_length=200,null=True)
     captain = models.OneToOneField("Player", related_name="captain",on_delete=models.SET_NULL,null=True,blank=True,unique=False)

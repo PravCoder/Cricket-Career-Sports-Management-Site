@@ -229,15 +229,18 @@ footer {
 <div class="">
     <div class="hero">
         <img src="cricket-image.jpg" alt="Cricket Image">
-        <div class="search-bar">
-            <input type="text" placeholder="Search...">
-            <select>
-                <option value="player">Players</option>
-                <option value="team">Teams</option>
-                <option value="organization">Organizations</option>
-            </select>
-            <button>Search</button>
-        </div>
+        <form method="POST" action="">
+            {% csrf_token %}
+            <div class="search-bar">
+                <input type="text" placeholder="Search..." id="entered-query" name="entered-query">
+                <select id="query-type" name="query-type">
+                    <option value="player">Players</option>
+                    <option value="team">Teams</option>
+                    <option value="organization">Organizations</option>
+                </select>
+                <button type="submit">Search</button>
+            </div>
+        </form>
     </div>
 
     <div class="sections">
