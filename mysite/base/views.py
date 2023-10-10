@@ -46,14 +46,14 @@ def reset(request): # resets the stats of each player and deletes all games & st
     return render(request, "base/home.html", context)
 
 def home(request):
-    if request.POST.get("entered-query") != None and request.POST.get("query-type") != None:
-        return redirect("search", entered_query=request.POST.get("entered-query"), query_type=request.POST.get("query-type"))
+    print(request.POST)
+    if request.POST.get("query-type") != "":
+        if request.POST.get("entered-query") =="":
+            return redirect("search", entered_query="all", query_type=request.POST.get("query-type"))
+        if request.POST.get("entered-query") !="" and request.POST.get("entered-query") != None:
+           return redirect("search", entered_query=request.POST.get("entered-query"), query_type=request.POST.get("query-type")) 
     user = request.user
-    """for u in Player.objects.all():
-        for t in Team.objects.all():
-            if u in list(t.players.all()):
-                u.teams.add(t)
-                u.save()"""
+    
     if user.is_authenticated == False:
         context = {}
         return render(request, "base/home.html", context)
@@ -573,21 +573,71 @@ def schedule_game(request):
     context = {}
     return render(request, "base/schedule_game.html", context)
 
-
+"""
+TODO:
+- implement search logic
+"""
 def search(request, entered_query=None, query_type=None):
     results = []
+    # FROM SEARCH PAGE
     if request.method == "POST":
+        print(request.POST)
         query_type = request.POST.get("query-type")
-        entered_query = request.POST.get("entered-query")
-    if query_type == "player":
-        for p in Player.objects.all():
-            results.append(p)
-    if query_type == "team":
-        for t in Team.objects.all():
-            results.append(t)
-    if query_type == "organization":
-        for o in Organization.objects.all():
-            results.append(o)
+        entered_query = request.POST.get("entered-query").lower()
+        if query_type != None:
+            if entered_query == "":
+                entered_query = entered_query.lower()
+                if query_type == "player":
+                    for p in Player.objects.all():
+                        results.append(p)
+                if query_type == "team":
+                    for t in Team.objects.all():
+                        results.append(t)
+                if query_type == "organization":
+                    for o in Organization.objects.all():
+                        results.append(o)
+            if entered_query != "":
+                if query_type == "player":
+                    for p in Player.objects.all():
+                        if entered_query in p.first_name.lower() or entered_query in p.last_name.lower() or entered_query in p.username.lower():
+                            results.append(p)
+                if query_type == "team":
+                    for t in Team.objects.all():
+                        if entered_query in t.name.lower() or (t.organization != None and entered_query in t.organization.name.lower()):
+                            results.append(t)
+                if query_type == "organization":
+                    for o in Organization.objects.all():
+                        if entered_query in o.name.lower():
+                            results.append(o)
+            context = {"query_type":query_type, "results":results}
+            return render(request, "base/search.html", context)
+
+    # FROM HOMEPAGE
+    if entered_query != "all":
+        entered_query = entered_query.lower()
+        if query_type == "player":
+            for p in Player.objects.all():
+                if entered_query in p.first_name.lower() or entered_query in p.last_name.lower() or entered_query in p.username.lower():
+                    results.append(p)
+        if query_type == "team":
+            for t in Team.objects.all():
+                if entered_query in t.name.lower() or (t.organization != None and entered_query in t.organization.name.lower()):
+                    results.append(t)
+        if query_type == "organization":
+            for o in Organization.objects.all():
+                if entered_query in o.name.lower():
+                    results.append(o)
+    if entered_query == "all": 
+        entered_query = entered_query.lower()
+        if query_type == "player":
+            for p in Player.objects.all():
+                results.append(p)
+        if query_type == "team":
+            for t in Team.objects.all():
+                results.append(t)
+        if query_type == "organization":
+            for o in Organization.objects.all():
+                results.append(o)
 
     context = {"query_type":query_type, "results":results}
     return render(request, "base/search.html", context)
