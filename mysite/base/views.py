@@ -573,11 +573,11 @@ def schedule_game(request):
     context = {}
     return render(request, "base/schedule_game.html", context)
 
-"""
-TODO:
-- implement search logic
-"""
 def search(request, entered_query=None, query_type=None):
+    """
+    When search form is submitted we always recive the query-type dropdown as a key, and we always
+    receive entered_query as a key even if its left blank
+    """
     results = []
     # FROM SEARCH PAGE
     if request.method == "POST":
