@@ -4,41 +4,105 @@
 {% block content %}
 
 <style>
-    input[type=text], select {
-      width: 100%;
-      padding: 12px 20px;
-      margin: 8px 0;
-      display: inline-block;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
-    
-    input[type=submit] {
-      width: 100%;
-      background-color: #4CAF50;
-      color: white;
-      padding: 14px 20px;
-      margin: 8px 0;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    
-    input[type=submit]:hover {
-      background-color: #45a049;
-    }
-    
-    .sche-game-div {
-      border-radius: 5px;
-      background-color: #f2f2f2;
-      padding: 20px;
-    }
-    </style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #68727d;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+</style>
     <body>
     
-    <h1>Schedule Game</h1>
+    <div class="container">
+      <h1>Schedule Game</h1>
+      <form action="" method="POST">
+          {% csrf_token %}
+          <div class="form-group">
+            <label>Enter Your Team Name</label>
+            <input type="text" name="user-team" placeholder="enter team..." autocomplete="off">
+          </div>
+
+          <div class="form-group">
+            <label>Enter Opposing Team Name</label>
+            <input type="text" name="opp-team" placeholder="enter team..." autocomplete="off">
+          </div>
+
+          <div class="form-group">
+            <label>Enter Location</label>
+            <input type="text" name="location" placeholder="enter location..." autocomplete="off">
+          </div>
+          
+          <div class="form-group">
+            <label>Enter Date</label>
+            <input type="text" name="date" placeholder="enter date..." autocomplete="off">
+          </div>
+
+          <div class="form-group">
+            <label>Enter Time</label>
+            <input type="text" name="time" placeholder="ex 8am-9am" autocomplete="off">
+            <br>
+          </div>
+
+          <div class="form-group">
+            <label>Overs</label>
+            <input type="text" name="overs" placeholder="per team">
+          </div>
+          
+          <div class="form-group">
+            <input type="submit" class="btn" value="Schedule Organization">
+          </div>
+      
+
+      </form>
+    </div>
     
+    <!--
     <div class="sche-game-div">
       <form action="" method="POST">
         {% csrf_token %}
@@ -66,6 +130,7 @@
 
       </form>
     </div>
+    -->
     
     </body>                
 {% endblock %}
