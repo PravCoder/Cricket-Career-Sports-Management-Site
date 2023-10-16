@@ -98,7 +98,7 @@
             {% for t in results %}
                 <div class="result-box">
                     <img src="player1.jpg" alt="Player 1">
-                    <h2>{{t.name}}</h2>
+                    <h2><a  href="{% url 'team' t.id %}">{{t.name}}</a></h2>
                     {% if t.organization %}
                         <p>Organization: <a href="{% url 'view-organization' t.organization.id %}">{{t.organization.name}}</a></p>
                     {% endif %}
