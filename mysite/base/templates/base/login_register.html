@@ -2,63 +2,57 @@
 
 {% block content %}
 <style>
-    
-    * {
-      box-sizing: border-box;
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
     }
-    
-    /* Add padding to containers */
+
     .container {
-      padding: 16px;
-      background-color: white;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-    
-    /* Full-width input fields */
-    input[type=text], input[type=password] {
-      width: 100%;
-      padding: 15px;
-      margin: 5px 0 22px 0;
-      display: inline-block;
-      border: none;
-      background: #f1f1f1;
+
+    h1 {
+        text-align: center;
     }
-    
-    input[type=text]:focus, input[type=password]:focus {
-      background-color: #ddd;
-      outline: none;
+
+    .form-group {
+        margin-bottom: 20px;
     }
-    
-    /* Overwrite default styles of hr */
-    hr {
-      border: 1px solid #f1f1f1;
-      margin-bottom: 25px;
+
+    label {
+        font-weight: bold;
     }
-    
-    /* Set a style for the submit button */
-    .registerbtn {
-      background-color: #04AA6D;
-      color: white;
-      padding: 16px 20px;
-      margin: 8px 0;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-      opacity: 0.9;
+
+    input[type="text"],
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
     }
-    
-    .registerbtn:hover {
-      opacity: 1;
+
+    textarea {
+        resize: vertical;
     }
-    
-    /* Add a blue text color to links */
-    a {
-      color: dodgerblue;
+
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #68727d;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
     }
-    
-    /* Set a grey background color and center the text of the "sign in" section */
-    .signin {
-      background-color: #f1f1f1;
-      text-align: center;
+
+    .btn:hover {
+        background-color: #0056b3;
     }
 </style>
 
@@ -68,14 +62,20 @@
         {% csrf_token %}
         <div class="container">
             <h1>Login</h1>
-        
-            <label><b>Email</b></label>
-            <input type="text" placeholder="Enter Email" name="email" id="email" required>
-        
-            <label><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="password" required>
-                
-            <button type="submit" class="registerbtn">Login</button>
+
+            <div class="form-group">
+              <label>Email</label>
+              <input type="text" placeholder="Enter Email" name="email" id="email" required>
+            </div>
+            
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" placeholder="Enter Password" name="password" required>
+            </div>
+  
+            <div class="form-group">
+              <input type="submit" class="btn" value="Login">
+            </div>
         </div>
         
         <div class="container signin">
@@ -88,23 +88,43 @@
 <div>
     <form method="POST" action="">
         {% csrf_token %}
-        <h1>Register</h1>
-        <label>First Name:</label>
-        <input type="text" name="first-name"><br>
-        <label>Last Name:</label>
-        <input type="text" name="last-name"><br>
-        <label>Username:</label>
-        <input type="text" name="username"><br>
-        <label>Email:</label>
-        <input type="text" name="email"><br>
-        <label>Password:</label>
-        <input type="password" name="password1"><br>
+        <div class="container">
+          <h1>Register</h1>
 
-        <label>Password Again:</label>
-        <input type="password" name="password2"><br>
-        
+          <div class="form-group">
+            <label>First Name:</label>
+            <input type="text" name="first-name"><br>
+          </div>
 
-        <input type="submit" class="registerbtn" value="Register">
+          <div class="form-group">
+            <label>Last Name:</label>
+            <input type="text" name="last-name"><br>
+          </div>
+
+          <div class="form-group">
+            <label>Username:</label>
+            <input type="text" name="username"><br>
+          </div>
+
+          <div class="form-group">
+            <label>Email:</label>
+            <input type="text" name="email"><br>
+          </div>
+
+          <div class="form-group">
+            <label>Password:</label>
+            <input type="password" name="password1"><br>
+          </div>
+
+          <div class="form-group">
+            <label>Password Again:</label>
+            <input type="password" name="password2"><br>
+          </div>
+          
+          
+
+          <input type="submit" class="registerbtn" value="Register">
+        </div>
     </form>
     <div class="container signin">
         <p>Already have an account? <a href="{% url 'login' %}">Login</a>.</p>
