@@ -18,7 +18,7 @@ body {
 }
 
 .container {
-    max-width: 800px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 20px;
     background-color: #ffffff;
@@ -304,6 +304,61 @@ select {
 .submit-button:hover {
     background-color: #0e75c2;
 }
+
+
+
+
+
+
+
+
+/* Styles for the tab bar */
+.tab-bar {
+    display: flex;
+    justify-content: space-around;
+    background-color: #f4f4f4;
+    padding: 10px 0;
+}
+
+.tab {
+    cursor: pointer;
+    padding: 10px 20px;
+    background-color: #ddd;
+    border-radius: 5px;
+}
+
+/* Styles for tab content */
+.tab-content {
+    display: none;
+    padding: 20px;
+}
+
+/* Show specific tab content when a tab is clicked */
+#content-membersTab.show {
+    display: block;
+}
+
+#content-teamsTab.show {
+    display: block;
+}
+
+#content-clubGames.show {
+    display: block;
+}
+#content-addPlayers.show {
+    display: block;
+}
+#content-shortTermGame.show {
+    display: block;
+}
+#content-longTermGame.show {
+    display: block;
+}
+#content-longTermTeam.show {
+    display: block;
+}
+/* Add more styles for additional tabs as needed */
+
 </style>
 </head>
 <body>
@@ -316,183 +371,242 @@ select {
             <p>{{org.description}}</p>
             <p>Location: {{org.location}}</p>
         </div>
-        <div class="players">
-            <h3>Members</h3>
-            <ul>
-                {% for p in org.members.all %}
-                    <li class="player">
-                        <img src="#" alt="Player 1">
-                        <div class="player-info">
-                            <h3>{{p.first_name}} {{p.last_name}}</h3>
-                            <p><a href="{% url 'player-career' p.id %}" >{{p.username}}</a></p>
-                            
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
+
+        <div class="tab-bar">
+            <div class="tab" id="membersTab">Members</div>
+            <div class="tab" id="teamsTab">Teams</div>
+            <div class="tab" id="clubGames">Club Games</div>
+            <div class="tab" id="addPlayers">Add Players</div>
+            <div class="tab" id="shortTermGame">Short Term Game</div>
+            <div class="tab" id="longTermGame">Long Term Game</div>
+            <div class="tab" id="longTermTeam">Create Long Term Team</div>
         </div>
-        <br>
-        <br>
-        <div class="players">
-            <h3>Teams</h3>
-            <ul>
-                {% for t in org.teams.all %}
-                    <li class="player">
-                        <img src="#" alt="Player 1">
-                        <div class="player-info">
-                            <h3>{{t.name}}</h3>
-                            <p><a href="{% url 'team' t.id %}" >view team</a></p>
-                            
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-        <br>
-        <br>
-        <div class="players">
-            <h3>Club Games</h3>
-            {% for game in org.games.all %}
-                <a href="{% url 'view-game' game.id %}">
-                <div class="card">
-                    <div class="game-container"> 
-                            <h4>{{game.team1.name}} vs. {{game.team2.name}}</h4>
-                            <h5>{{game.location}}, {{game.date}}, {{game.time}}</h5>
-                    </div>
-                </div>
-                </a>
-            {% endfor %}
-        </div>
-        <br>
-        <br>
-        <br>
-        <hr>
-        {% if user_in_org == True %}
-        <h3>Add players to organization...</h3>
-        <div class="search-container">
-            <form action="" method="POST">
-                {% csrf_token %}
-                <input type="text" id="search-players" name="search-players" placeholder="Search for players..." autocomplete="off">
-                <button type="submit" id="search-button">Search</button>
-            </form>
-            
-                <div id="search-results">
-                    {% for p in query_players %}
+
+        <div class="tab-content" id="content-membersTab">
+            <!-- MEMBERS TAB -->
+            <div class="players">
+                <h3>Members</h3>
+                <ul>
+                    {% for p in org.members.all %}
                         <li class="player">
                             <img src="#" alt="Player 1">
                             <div class="player-info">
-                                <h3>{{p.first_name}} {{p.last_name}} 
-                                
-                                </h3>
+                                <h3>{{p.first_name}} {{p.last_name}}</h3>
                                 <p><a href="{% url 'player-career' p.id %}" >{{p.username}}</a></p>
+                                
                             </div>
-                            <form action="" method="POST" class="player-form">
-                                {% csrf_token %}
-                                <button class="add-button" name="add-player-org" value="{{p.id}}">Add to Organization</button>
-                            </form>
                         </li>
                     {% endfor %}
-                </div>
-        </div>
-        <br>
-        <br>
-        <br>
-        <h3>Schedule Short-Term Game</h3>
-        <form method="POST" action="">
-            {% csrf_token %}
-            <label for="overs">Number of Overs:</label>
-            <input type="number" id="overs" name="overs" min="1" required placeholder="per innings">
-            <label for="location">Location:</label>
-            <input type="text" id="location" name="location" required placeholder="address">
-            <label for="time">Time:</label>
-            <input type="text" id="time" name="time" required placeholder="enter game start time...">
-            <label for="date">Date:</label>
-            <input type="date" id="date" name="date" required placeholder="mm/dd/yyyy">
-            <div class="player-pool">
-                <div class="team">
-                    <h2><label for="team1-name">Enter team1 name:</label><input type="text" id="team1-name" name="team1-name" required placeholder="team-1 name..."></h2>
-                    <ul id="your-team" class="team-list" ondrop="drop(event)" ondragover="allowDrop(event)">
-                       {% for member in org.members.all %}
-                            {{member.first_name}} {{member.last_name}}
-                            <input type="checkbox", value="clicked", name="team1#{{member.id}}">
-                       {% endfor %}
-                    </ul>
-                </div>
-                <div class="team">
-                    <h2><label for="team2-name">Enter team2 name:</label><input type="text" id="team2-name" name="team2-name" required placeholder="team-2 name..."></h2>
-                    <ul id="opposing-team" class="team-list" ondrop="drop(event)" ondragover="allowDrop(event)">
-                        {% for member in org.members.all %}
-                            {{member.first_name}} {{member.last_name}} 
-                            <input type="checkbox", value="clicked", name="team2#{{member.id}}">
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-    
-            <button type="submit" name="short-game-schedule" value="Not-None">Schedule Game</button>
-        </form>
-        {% endif %}
-        <div class="container">
-            <h2>Long-Term Game Scheduling</h2>
-            <form method="POST" action="">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="team1">Select Team 1:</label>
-                    <select id="team1" name="team1" required>
-                        {% for t in org.teams.all %}
-                            <option value="{{t.id}}">{{t.name}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="team2">Select Team 2:</label>
-                    <select id="team2" name="team2" required>
-                        {% for t in org.teams.all %}
-                            <option value="{{t.id}}">{{t.name}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="overs">Number of Overs:</label>
-                    <input type="number" id="overs" name="overs" min="1" required>
-                </div>
-                <div class="form-group">
-                    <label for="location">Location:</label>
-                    <input type="text" id="location" name="location" required>
-                </div>
-                <div class="form-group">
-                    <label for="date">Date:</label>
-                    <input type="date" id="date" name="date" required>
-                </div>
-                <div class="form-group">
-                    <label for="time">Time:</label>
-                    <input type="time" id="time" name="time" required>
-                </div>
-                <button type="submit" class="submit-button" name="schedule-long-game" value="Not-None">Schedule Game</button>
-            </form>
-        </div>
-    <br>
-    <br>
-    <br>
-    <h3>Create Long-term team:</h3>
-    <form method="POST" action="">
-        {% csrf_token %}
-        <div class="player-pool">
-            <div class="team">
-                <h2><label for="team1-name">Enter new team name:</label><input type="text" id="new-team-name" name="new-team-name" required placeholder="new team name..."></h2>
-                <ul id="your-team" class="team-list" ondrop="drop(event)" ondragover="allowDrop(event)">
-                   {% for member in org.members.all %}
-                        {{member.first_name}} {{member.last_name}}
-                        <input type="checkbox", value="clicked", name="new-team#{{member.id}}">
-                   {% endfor %}
                 </ul>
             </div>
+            <br>
+            <br>
         </div>
-        <button class="add-button" name="create-long-term-team" value="Not-None">Add to Organization</button>
-    </form>
+        
+        <div class="tab-content" id="content-teamsTab">
+            <!-- TEAMS TAB -->
+            <div class="players">
+                <h3>Teams</h3>
+                <ul>
+                    {% for t in org.teams.all %}
+                        <li class="player">
+                            <img src="#" alt="Player 1">
+                            <div class="player-info">
+                                <h3>{{t.name}}</h3>
+                                <p><a href="{% url 'team' t.id %}" >view team</a></p>
+                                
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <br>
+            <br>
+        </div>
+        
+        <div class="tab-content" id="content-clubGames">
+            <!-- CLUB TAB -->
+            <div class="players">
+                <h3>Club Games</h3>
+                {% for game in org.games.all %}
+                    <a href="{% url 'view-game' game.id %}">
+                    <div class="card">
+                        <div class="game-container"> 
+                                <h4>{{game.team1.name}} vs. {{game.team2.name}}</h4>
+                                <h5>{{game.location}}, {{game.date}}, {{game.time}}</h5>
+                        </div>
+                    </div>
+                    </a>
+                {% endfor %}
+            </div>
+            <br>
+            <br>
+            <br>
+            <hr>
+        </div>
+
+        <div class="tab-content" id="content-addPlayers">
+            <!-- ADD PLAYER TAB -->
+            {% if user_in_org == True %}
+            <h3>Add players to organization...</h3>
+            <div class="search-container">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <input type="text" id="search-players" name="search-players" placeholder="Search for players..." autocomplete="off">
+                    <button type="submit" id="search-button">Search</button>
+                </form>
+                
+                    <div id="search-results">
+                        {% for p in query_players %}
+                            <li class="player">
+                                <img src="#" alt="Player 1">
+                                <div class="player-info">
+                                    <h3>{{p.first_name}} {{p.last_name}} 
+                                    
+                                    </h3>
+                                    <p><a href="{% url 'player-career' p.id %}" >{{p.username}}</a></p>
+                                </div>
+                                <form action="" method="POST" class="player-form">
+                                    {% csrf_token %}
+                                    <button class="add-button" name="add-player-org" value="{{p.id}}">Add to Organization</button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </div>
+            </div>
+            <br>
+            <br>
+            <br>
+        </div>
+
+        <div class="tab-content" id="content-shortTermGame">
+            <!-- SCHEDULE SHORT-TERM GAME TAB -->
+            <h3>Schedule Short-Term Game</h3>
+            <form method="POST" action="">
+                {% csrf_token %}
+                <label for="overs">Number of Overs:</label>
+                <input type="number" id="overs" name="overs" min="1" required placeholder="per innings">
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location" required placeholder="address">
+                <label for="time">Time:</label>
+                <input type="text" id="time" name="time" required placeholder="enter game start time...">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required placeholder="mm/dd/yyyy">
+                <div class="player-pool">
+                    <div class="team">
+                        <h2><label for="team1-name">Enter team1 name:</label><input type="text" id="team1-name" name="team1-name" required placeholder="team-1 name..."></h2>
+                        <ul id="your-team" class="team-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        {% for member in org.members.all %}
+                                {{member.first_name}} {{member.last_name}}
+                                <input type="checkbox", value="clicked", name="team1#{{member.id}}">
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="team">
+                        <h2><label for="team2-name">Enter team2 name:</label><input type="text" id="team2-name" name="team2-name" required placeholder="team-2 name..."></h2>
+                        <ul id="opposing-team" class="team-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                            {% for member in org.members.all %}
+                                {{member.first_name}} {{member.last_name}} 
+                                <input type="checkbox", value="clicked", name="team2#{{member.id}}">
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+        
+                <button type="submit" name="short-game-schedule" value="Not-None">Schedule Game</button>
+            </form>
+            {% endif %}
+        </div>
+
+        <div class="tab-content" id="content-longTermGame">
+            <div class="container">
+                <!-- LONG-TERM GAME TAB -->
+                <h2>Long-Term Game Scheduling</h2>
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="team1">Select Team 1:</label>
+                        <select id="team1" name="team1" required>
+                            {% for t in org.teams.all %}
+                                <option value="{{t.id}}">{{t.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="team2">Select Team 2:</label>
+                        <select id="team2" name="team2" required>
+                            {% for t in org.teams.all %}
+                                <option value="{{t.id}}">{{t.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="overs">Number of Overs:</label>
+                        <input type="number" id="overs" name="overs" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Location:</label>
+                        <input type="text" id="location" name="location" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date:</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="time">Time:</label>
+                        <input type="time" id="time" name="time" required>
+                    </div>
+                    <button type="submit" class="submit-button" name="schedule-long-game" value="Not-None">Schedule Game</button>
+                </form>
+            </div>
+        </div>
+    <br>
+    <br>
+    <br>
+
+    <div class="tab-content" id="content-longTermTeam">
+        <!-- CREATE LONG-TERM TEAM TAB -->
+        <h3>Create Long-term team:</h3>
+        <form method="POST" action="">
+            {% csrf_token %}
+            <div class="player-pool">
+                <div class="team">
+                    <h2><label for="team1-name">Enter new team name:</label><input type="text" id="new-team-name" name="new-team-name" required placeholder="new team name..."></h2>
+                    <ul id="your-team" class="team-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    {% for member in org.members.all %}
+                            {{member.first_name}} {{member.last_name}}
+                            <input type="checkbox", value="clicked", name="new-team#{{member.id}}">
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <button class="add-button" name="create-long-term-team" value="Not-None">Add to Organization</button>
+        </form>
+        </div>
+    
     </div>
+
     
 </body>
 </html>
 
+
+<script>
+    // Get tab elements and add click event listeners
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => {
+            // Hide all tab contents
+            tabContents.forEach(content => {
+                content.classList.remove('show');
+            });
+    
+            // Show the clicked tab content
+            tabContents[index].classList.add('show');
+        });
+    });
+    
+    </script>
 {% endblock %}
