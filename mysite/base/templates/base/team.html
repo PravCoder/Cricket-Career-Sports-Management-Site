@@ -5,22 +5,115 @@
 <html>
 <head>
 <style>
-.grid-container {
-  display: grid;
-  grid-template-columns: auto auto auto;
-  background-color: #2196F3;
-  padding: 10px;
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
 }
-.grid-item {
-  background-color: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  padding: 10px;
-  font-size: 20px;
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.team-info {
+  background-color: #222;
+  padding: 20px;
+  border-radius: 10px;
   text-align: center;
+  margin-bottom: 20px;
+  color: white;
 }
+
+.team-name {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.captain {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.player-box-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+a {
+  color: white;
+}
+.player-box {
+  width: calc(33.33% - 20px);
+  background-color: #5a4e4e;
+  padding: 15px;
+  border-radius: 10px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+}
+
+.player-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.player-name {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.player-username {
+  font-size: 14px;
+}
+
+.invitation-form {
+  background-color: #666;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  width: 600px;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  align-self: center;
+  align-self: center;
+  margin: 0 auto; /* Centering the form horizontally */
+  margin-bottom: 20px; /* Add some margin at the bottom */
+}
+
+#invite-input {
+  width: 70%;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+#invite-button {
+  background-color: #1da1f2;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+#invite-button:hover {
+  background-color: #0e75c2;
+}
+
 .center {
   text-align: center;
 }
+
 table, th, td {
   border: 1px solid;
 }
@@ -32,28 +125,30 @@ table.center {
   margin-left: auto; 
   margin-right: auto;
 }
-input[type=button], input[type=submit], input[type=reset] {
-  background-color: #04AA6D;
-  border: none;
-  color: white;
-  padding: 8px 16px;
-  text-decoration: none;
-  margin: 4px 2px;
-  cursor: pointer;
-}
 </style>
 </head>
 <body>
 {% if team != None %}  <!-- if player is apart of a team -->
-<h1>{{team.name}}</h1>
-<h3>Captian: {{team.captain.username}}</h3>
 
-<div class="grid-container">
+<div class="container">
+  <div class="team-info">
+      <div class="team-name">{{team.name}}</div>
+      <div class="captain">Captain: Captian: {{team.captain.username}}</div>
+  </div>
+
+  <!-- Player Boxes Container -->
+  <div class="player-box-container">
     {% for p in players %}
-        <div class="grid-item">
-            <a href="{% url 'player-career' p.id %}">{{p.username}}</a>
+          <!-- Player Boxes -->
+          <div class="player-box">
+            <img class="player-img" src="" alt="Player 1">
+            <div class="player-name">{{p.first_name}} {{p.last_name}}</div>
+            <div class="player-username">@<a href="{% url 'player-career' p.id %}">{{p.username}}</a></div>
         </div>
     {% endfor %}
+
+  </div>
+
 </div>
 
 <div class="center">
@@ -77,13 +172,16 @@ input[type=button], input[type=submit], input[type=reset] {
     </tr>
 </table>
 
-<div>
-    <form method="POST" action="">  <!-- everytime form is submitted  it posts a query-dict {"input-name":"text-typed-in-input"} -->
-        {% csrf_token %}
-        Enter the username of player you want to invite to team.
-        <input type="text" name="username" placeholder="Enter username...">
-        <input type="submit" value="Submit">
-    </form>
+<br>
+<br>
+<!-- Invitation Form -->
+<div class="invitation-form">
+  <form method="POST" action="">  <!-- everytime form is submitted  it posts a query-dict {"input-name":"text-typed-in-input"} -->
+    {% csrf_token %}
+    Enter the username of player you want to invite to team.
+    <input type="text" name="username" placeholder="Enter username...">
+    <input type="submit" value="Submit">
+</form>
 </div>
 
 </body>
