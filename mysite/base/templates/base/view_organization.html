@@ -114,7 +114,7 @@ margin-right: 10px;
 }
 
 #search-button {
-background-color: #007bff;
+background-color: #69a5e5;
 color: #fff;
 border: none;
 border-radius: 20px;
@@ -156,7 +156,7 @@ margin-bottom: 10px; /* Add spacing between players */
 }
 
 .add-button {
-background-color: #1da1f2;
+background-color: #69a5e5;
 color: white;
 border: none;
 border-radius: 4px;
@@ -314,10 +314,15 @@ select {
 
 /* Styles for the tab bar */
 .tab-bar {
+    justify-content: center; /* Center the tabs horizontally */
     display: flex;
     justify-content: space-around;
     background-color: #f4f4f4;
-    padding: 10px 0;
+    padding: 5px 0;
+    width: max-content;
+    align-self: center;
+    margin: 0 auto; /* Center the tab bar */
+    align-items: center; /* Center the items vertically */
 }
 
 .tab {
@@ -325,6 +330,8 @@ select {
     padding: 10px 20px;
     background-color: #ddd;
     border-radius: 5px;
+    text-align: justify;
+    margin: 0 10px; /* Add space between tabs */
 }
 
 /* Styles for tab content */
@@ -362,6 +369,15 @@ select {
 </style>
 </head>
 <body>
+    <div class="tab-bar">
+        <div class="tab" id="membersTab">Members</div>
+        <div class="tab" id="teamsTab">Teams</div>
+        <div class="tab" id="clubGames">Club Games</div>
+        <div class="tab" id="addPlayers">Add Players</div>
+        <div class="tab" id="shortTermGame">Short Term Game</div>
+        <div class="tab" id="longTermGame">Long Term Game</div>
+        <div class="tab" id="longTermTeam">Create Long Term Team</div>
+    </div>
     <div class="container">
         <div class="header">
             <h1>{{org.name}}</h1>
@@ -372,15 +388,6 @@ select {
             <p>Location: {{org.location}}</p>
         </div>
 
-        <div class="tab-bar">
-            <div class="tab" id="membersTab">Members</div>
-            <div class="tab" id="teamsTab">Teams</div>
-            <div class="tab" id="clubGames">Club Games</div>
-            <div class="tab" id="addPlayers">Add Players</div>
-            <div class="tab" id="shortTermGame">Short Term Game</div>
-            <div class="tab" id="longTermGame">Long Term Game</div>
-            <div class="tab" id="longTermTeam">Create Long Term Team</div>
-        </div>
 
         <div class="tab-content" id="content-membersTab">
             <!-- MEMBERS TAB -->

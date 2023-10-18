@@ -175,7 +175,7 @@ table.center {
 <br>
 <br>
 
-{% if request.user in team.player.all %}
+{% if request.user in team.players.all %}
   <!-- Invitation Form -->
   <div class="invitation-form">
     <form method="POST" action="">  <!-- everytime form is submitted  it posts a query-dict {"input-name":"text-typed-in-input"} -->
