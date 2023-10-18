@@ -174,15 +174,18 @@ table.center {
 
 <br>
 <br>
-<!-- Invitation Form -->
-<div class="invitation-form">
-  <form method="POST" action="">  <!-- everytime form is submitted  it posts a query-dict {"input-name":"text-typed-in-input"} -->
-    {% csrf_token %}
-    Enter the username of player you want to invite to team.
-    <input type="text" name="username" placeholder="Enter username...">
-    <input type="submit" value="Submit">
-</form>
-</div>
+
+{% if request.user in team.player.all %}
+  <!-- Invitation Form -->
+  <div class="invitation-form">
+    <form method="POST" action="">  <!-- everytime form is submitted  it posts a query-dict {"input-name":"text-typed-in-input"} -->
+      {% csrf_token %}
+      Enter the username of player you want to invite to team.
+      <input type="text" name="username" placeholder="Enter username...">
+      <input type="submit" value="Submit">
+  </form>
+  </div>
+{% endif %}
 
 </body>
 </html>

@@ -164,7 +164,7 @@ def team(request, pk):   # check is player doesn't have a team
     if request.method == "POST":
         username = request.POST.get("username")
         player = Player.objects.get(username=username)
-        team_invite = TeamInvite.objects.create(to_team=Player.team.objects.get(id=int(pk)))
+        team_invite = TeamInvite.objects.create(to_team=team)
         player.team_invites.add(team_invite)
         team_invite.save()
 
