@@ -9,185 +9,258 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Enter Match Stats</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
+<style>
+.game-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    text-align: center;
+}
 
-    .header {
-      background-color: #1da1f2;
-      color: white;
-      padding: 10px;
-      text-align: center;
-    }
+.teams {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
 
-    .game-info {
-      background-color: #f1f1f1;
-      padding: 10px;
-      text-align: center;
-    }
+.team {
+    text-align: center;
+    margin: 0 20px;
+}
 
-    .innings {
-      display: flex;
-      flex-direction: column; /* Stack sections vertically */
-      margin: 20px auto;
-      width: 85%;
-    }
+.team img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
 
-    .innings-section {
-      background-color: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      padding: 10px;
-      width: 100%; /* Full width within the container */
-      margin-bottom: 20px;
-    }
+.vs {
+    font-size: 24px;
+    margin: 0 20px;
+}
 
-    .stat-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-    }
+.result {
+    background-color: #f1f1f1;
+    padding: 5px;
+    border-radius: 5px;
+}
 
-    .stat-table th,
-    .stat-table td {
-      padding: 10px;
-      text-align: center;
-      border: 1px solid #ddd;
-    }
+h2 {
+    margin-top: 0;
+}
 
-    .ball-boxes {
-      display: flex;
-      flex-direction: row; /* Arrange ball boxes in a row */
-      justify-content: space-between;
-      width: 80%;
-      margin: 0 auto;
-      margin-top: 20px;
-    }
+p {
+    margin: 5px 0;
+}
 
-    .ball-box {
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      width: 14%;
-      padding: 10px;
-      text-align: center;
-      font-size: 20px;
-    }
-
-    .outcome-buttons {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    .checkbox-label {
-      display: flex;
-      align-items: center;
-      margin-right: 15px;
-    }
-
-    .checkbox-label input[type="checkbox"] {
-      margin-right: 5px;
-    }
-
-    .bowler-selector {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    select {
-      padding: 5px;
-    }
-
-    .submit-button {
-      display: block;
-      margin: 20px auto;
-      padding: 10px 20px;
-      background-color: #1da1f2;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .done-button {
-      display: block;
-      margin: 20px auto;
-      padding: 10px 20px;
-      background-color: #1da1f2;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+a {
+  text-decoration: none;
+  color: black;
+}
 
 
 
 
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f0f0f0;
-    }
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
 
-    .team-container {
-      max-width: 600px;
-      margin: 20px auto;
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-      display: flex;
-      justify-content: space-between;
-    }
+.header {
+  background-color: #7d8a92;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  height: 50px;
+  margin: 0 auto; /* Center the tab bar */
+  align-items: center; /* Center the items vertically */
+  width: 600px;
+}
 
-    .team {
-      width: 48%; /* Adjust the width as needed */
-    }
 
-    .team-name {
-      font-size: 1.2em;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
 
-    .player-list {
-      list-style: none;
-      padding: 0;
-    }
+.innings {
+  display: flex;
+  flex-direction: column; /* Stack sections vertically */
+  margin: 20px auto;
+  width: 85%;
+}
 
-    .player-list-item {
-      margin-bottom: 5px;
-    }
-  </style>
+.innings-section {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  width: 100%; /* Full width within the container */
+  margin-bottom: 20px;
+}
+
+.stat-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.stat-table th,
+.stat-table td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.ball-boxes {
+  display: flex;
+  flex-direction: row; /* Arrange ball boxes in a row */
+  justify-content: space-between;
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 20px;
+}
+
+.ball-box {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 14%;
+  padding: 10px;
+  text-align: center;
+  font-size: 20px;
+}
+
+.outcome-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+.bowler-selector {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+select {
+  padding: 5px;
+}
+
+.submit-button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #1da1f2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.done-button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #1da1f2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+
+
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
+}
+
+.team-container {
+  max-width: 600px;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+}
+
+.team {
+  width: 48%; /* Adjust the width as needed */
+}
+
+.team-name {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.player-list {
+  list-style: none;
+  padding: 0;
+}
+
+.player-list-item {
+  margin-bottom: 5px;
+}
+</style>
 </head>
 <body>
 
 <div class="header">
-  <h1>Enter Match Stats</h1>
+  <h3>Enter Match Stats</h3>
 </div>
-<div class="game-info">
-  <h2>Game Information</h2>
-  <p>Teams: <a href="{% url 'team' game.team1.id %}">{{game.team1.name}}</a> vs <a href="{% url 'team' game.team2.id %}">{{game.team2.name}}</a></p>
-  <p>Location: {{game.location}}</p>
-  <p>Date: {{game.date}}</p>
-  <p>Time: {{game.time}}</p>
-  <p>Overs: {{game.overs}}</p>
-  {% if game.winner %} 
-  <h1>Winner: {{game.winner.name}}</h1>
-  {% endif %}
+<div class="game-container">
+  <h5>Game Information</h5>
+  <div class="teams">
+      <div class="team">
+          <img src="" alt="Team A">
+          <h2> <a href="{% url 'team' game.team1.id %}">{{game.team1.name}}</a> </h2>
+      </div>
+      <div class="vs">vs</div>
+      <div class="team">
+          <img src="team2.jpg" alt="Team B">
+          <h2><a href="{% url 'team' game.team2.id %}">{{game.team2.name}}</a></h2>
+      </div>
+  </div>
+  <div class="game-info">
+    <p><strong>Location:</strong>{{game.location}}</p>
+            <p><strong>Date:</strong>{{game.date}}</p>
+            <p><strong>Time:</strong> {{game.time}}</p>
+            <p><strong>Overs:</strong>{{game.overs}}</p>    
+  </div>
+  <div class="result">
+    <h3>Result:</h3>
+    {% if game.winner %} 
+      <p><strong>Winner: </strong>{{game.winner.name}}</p>
+    {% endif %}
+    
+    {% if game.entering_stats == True %}
+    <p><strong>{{game.team1.name}} Score: </strong>{{game.get_batting1_score}}/{{game.get_bowling1_score}}</p>
+    <p><strong>{{game.team2.name}} Score: </strong>{{game.get_batting2_score}}/{{game.get_bowling2_score}}</p>
+    
+    {% endif %}
+    {% if game.entering_stats == False %}
+      <p><strong>{{game.team1.name}} Score: </strong>0</p>
+      <p><strong>{{game.team2.name}} Score: </strong>0</p>
+    {% endif %}
+  </div>
 
-  {% if game.entering_stats == True %}
-    <h2>{{game.team1.name}}: {{game.get_batting1_score}}/{{game.get_bowling1_score}}</h2>
-    <h2>{{game.team2.name}}: {{game.get_batting2_score}}/{{game.get_bowling2_score}}</h2>
-  {% endif %}
-  {% if game.entering_stats == False %}
-    <h2>{{game.team1.name}}: 0/0</h2>
-    <h2>{{game.team2.name}}: 0/0</h2>
-  {% endif %}
 </div>
 
 {% if game.entering_stats == False and game.doneStats == False %}
