@@ -1,0 +1,50 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<style>
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    margin-top: 50px;
+}
+
+.weather-info {
+    margin-top: 20px;
+}
+
+.weather-info div {
+    margin-bottom: 10px;
+}
+
+.hidden {
+    display: none;
+}
+</style>
+
+
+<body>
+    <div class="container">
+        <h1>Pitch/Weather Conditions</h1>
+        <form method="POST" action="">
+            {% csrf_token %}
+            <label for="city">Enter City Name:</label>
+            <input type="text" id="entered_city" name="entered_city" required>
+            <input type="submit" value="Submit">
+        </form>
+
+        {% if city != "" %}
+            <div class="weather-info {% if not weather_data %}hidden{% endif %}">
+                <div><strong>City:</strong> {{ city }}</div>
+                {% for key, value in weather_data.items %} 
+                    <div><strong>{{key}}:</strong> {{ value }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+
+{% endblock %}

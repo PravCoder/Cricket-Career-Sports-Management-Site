@@ -14,7 +14,8 @@ urlpatterns = [
     path("view-leaderboard/", views.view_leaderboard, name="view-leaderboard"),
 
     path("search/entered_query=<str:entered_query>/query_type=<str:query_type>", views.search, name="search"),
-
+    
+    path("pitch-conditions", views.pitch_conditions, name="pitch-conditions"),
 
     path("login/", views.login_page, name="login"),
     path("register/", views.register_page, name="register"),

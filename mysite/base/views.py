@@ -3,7 +3,10 @@ from django.shortcuts import redirect, render
 from .models import GameInvite, Player,Team,Game,TeamInvite,PlayerGameStat,Organization,OrganizationInvite
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-
+import requests
+from pprint import pprint
+from mysite.settings import WEATHER_API_URL
+import datetime as dt
 
 def logout_user(request):
     if request.user.is_authenticated == True:
@@ -641,6 +644,47 @@ def search(request, entered_query=None, query_type=None):
 
     context = {"query_type":query_type, "results":results}
     return render(request, "base/search.html", context)
+
+def pitch_conditions(request):
+    city = ""
+    neccesary_data = {}
+
+    if request.method == "POST":
+        if request.POST.get("entered_city") != None:
+            city = request.POST.get("entered_city")
+            weather_data = dict(requests.get(WEATHER_API_URL+"&q="+city).json()) # get the data once the city is submitted
+
+    for info_key, value in weather_data.items():
+        if info_key == "coord":
+            neccesary_data["lon"] = value["lon"]
+            neccesary_data["lat"] = value["lat"]
+        if info_key == "weather":
+            neccesary_data["Weather Type"] = value[0]["main"]
+            neccesary_data["Weather Description"] = value[0]["description"]
+        if info_key == "main":
+            neccesary_data["Temperature"] = value["temp"]
+            neccesary_data["Feels Like"] = value["feels_like"]
+            neccesary_data["Minimum Temperature"] = value["temp_min"]
+            neccesary_data["Maximum Temperature"] = value["temp_max"]
+            neccesary_data["Pressure"] = value["pressure"]
+            neccesary_data["Humidity"] = value["humidity"]
+        if info_key == "visibility":
+            neccesary_data["visibility"] = value
+        if info_key == "wind":
+            neccesary_data["Wind Speed"] = value["speed"]
+            neccesary_data["Wind Temperature"] = value["deg"]
+        if info_key == "clouds":
+            neccesary_data["Cloudy Percentage"] = value["all"]
+        if info_key == "sys":
+            neccesary_data["Country"] = value["country"]
+            date_obj = dt.datetime.utcfromtimestamp(value["sunrise"])
+            neccesary_data["Sunrise"] = str(date_obj)
+            date_obj = dt.datetime.utcfromtimestamp(value["sunset"])
+            neccesary_data["Sunset"] = str(date_obj)
+
+    print(weather_data)
+    context = {"city":city, "weather_data":neccesary_data}
+    return render(request, "base/pitch_conditions.html", context)
 
 def view_leaderboard(request):
     query_list = []

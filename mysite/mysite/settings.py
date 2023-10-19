@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+import requests
+from pprint import pprint
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 print(BASE_DIR)
@@ -27,7 +29,15 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+# WEATHER API
+API_KEY = "187d2041d350edba39144e10522b73d3"
+WEATHER_API_URL= "http://api.openweathermap.org/data/2.5/weather?appid="+API_KEY
+# open weather account: weestbrook03tb@gmail.com, djbeg123*. Go to API keys. 
+"""
+API 401 responsein the following cases:
+You did not specify your API key in API request.
+Your API key is not activated yet. Within the next couple of hours, it will be activated and ready to use.
+"""
 # Application definition
 
 INSTALLED_APPS = [
