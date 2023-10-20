@@ -449,7 +449,6 @@ def view_organization(request, pk):
         
         # Schedule Short-Term Game within Organization
         if request.POST.get("short-game-schedule") != None:
-            print("SCHEDULE SHORT TERM GAME")
             # not adding Player.team.add(team) because this is short-team inside organization 
             team1_name = request.POST.get("team1-name")
             team2_name = request.POST.get("team2-name")
@@ -500,7 +499,6 @@ def view_organization(request, pk):
         # Create Long-Term Club Team within Organization
         create_long_team = request.POST.get("create-long-term-team")
         if  request.POST.get("create-long-term-team") != None:
-            print("CREATE LONG TEAM")
             team_name = request.POST.get("new-team-name")
             new_team = Team.objects.create(name=team_name)
 
@@ -517,8 +515,6 @@ def view_organization(request, pk):
             org.save()
         # Schedule Long-Term Team Club Game within Organization
         if request.POST.get("schedule-long-game") != None:
-            print("SCHEDUELe LONG CLUB GAME")
-            print(request.POST)
             team1 = Team.objects.get(id=int(request.POST.get("team1")))
             team2 = Team.objects.get(id=int(request.POST.get("team2")))
             overs = int(request.POST.get("overs"))
@@ -543,6 +539,19 @@ def view_organization(request, pk):
                 player.save()
             org.games.add(game)
             org.save()
+        # RANKINGS FORM SUBMITTED
+        if request.POST.get("rankings") != None:
+            query_list = []
+            stat_attribute = ""
+            attributes = ["runs", "wickets","catches","sixes","fours","extras","games_played","games_won","win_percentage","fifties","centuries","runs_hs","wickets_hs","fours_hs","sixes_hs","runs_average","wickets_average","fours_average","sixes_average","catches_average","extras_average"]
+            if request.method == "POST":
+                stat_attribute = request.POST.get("rank-type")
+                for attribute in attributes:
+                    if stat_attribute == attribute:
+                        query_list = list(org.members.all().order_by('-'+attribute))
+                print(query_list)
+                context = {"query_list":query_list, "stat_attribute":stat_attribute, "org":org, "user_in_org":True}
+                return render(request, "base/view_organization.html", context)
 
     user_in_org = False
     if request.user in list(org.members.all()):
@@ -648,6 +657,7 @@ def search(request, entered_query=None, query_type=None):
 def pitch_conditions(request):
     city = ""
     neccesary_data = {}
+    weather_data = {}
 
     if request.method == "POST":
         if request.POST.get("entered_city") != None:
