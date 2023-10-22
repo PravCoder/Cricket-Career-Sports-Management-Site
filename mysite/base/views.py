@@ -1,6 +1,6 @@
 from django.http import response
 from django.shortcuts import redirect, render
-from .models import GameInvite, Player,Team,Game,TeamInvite,PlayerGameStat,Organization,OrganizationInvite
+from .models import GameInvite, Player,Team,Game,TeamInvite,PlayerGameStat,Organization,OrganizationInvite, Chat, Message
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 import requests
@@ -552,13 +552,36 @@ def view_organization(request, pk):
                 print(query_list)
                 context = {"query_list":query_list, "stat_attribute":stat_attribute, "org":org, "user_in_org":True}
                 return render(request, "base/view_organization.html", context)
-
+        # CREATE CHAT CHANNEL
+        print(request.POST)
+        if request.POST.get("create-chat") != None:
+            name = request.POST.get("chat-name")
+            description = request.POST.get("description")
+            rules = request.POST.get('rules')
+            c1 = Chat.objects.create(name=name, description=description, rules=rules)
+            for key, value in request.POST.items():
+                if "#PLAYER" in key and value == "on":
+                    p = Player.objects.get(id=int(key.split("#")[0]))
+                    c1.participants.add(p)
+            org.chat_channels.add(c1)
+            c1.save()
+            org.save()
     user_in_org = False
     if request.user in list(org.members.all()):
         user_in_org = True
     print(user_in_org)
     context = {"org":org, "query_players":query_players, "user_in_org":user_in_org}
     return render(request, "base/view_organization.html", context) 
+
+def view_chat(request, pk):
+    chat = Chat.objects.get(id=int(pk))
+    if request.method == "POST":
+        m = Message.objects.create(sent_by = request.user, content=request.POST.get("sent_message"), date=str(dt.datetime.now()))
+        chat.messages.add(m)
+        m.save()
+        chat.save()
+    context = {"chat":chat}
+    return render(request, "base/chat.html", context)
 
 def schedule_game(request):
     user = request.user

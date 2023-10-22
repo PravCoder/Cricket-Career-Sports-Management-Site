@@ -367,6 +367,9 @@ select {
 #content-rankings.show {
     display: block;
 }
+#content-chatChannelsTab.show {
+    display: block;
+}
 /* Add more styles for additional tabs as needed */
 
 
@@ -430,6 +433,113 @@ select {
     color: rgb(0, 0, 0);
 }
 
+
+/* CSS for Chat Channels */
+.chat-container {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.chat-label {
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.chat-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.chat-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    resize: vertical;
+}
+
+.player-checkbox {
+    margin-bottom: 10px;
+}
+
+.player-container {
+    display: flex;
+    align-items: center;
+}
+
+.player-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.chat-button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.chat-button:hover {
+    background-color: #45a049;
+}
+
+
+
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.chat-channels {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.channel-list {
+    list-style: none;
+    padding: 0;
+}
+
+.channel-list li {
+    margin-bottom: 10px;
+}
+
+.channel-list li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.channel-list li a:hover {
+    color: #007bff;
+}
+
 </style>
 </head>
 <body>
@@ -442,6 +552,7 @@ select {
         <div class="tab" id="longTermGame">Long Term Game</div>
         <div class="tab" id="longTermTeam">Create Long Term Team</div>
         <div class="tab" id="rankings">Club Rankings</div>
+        <div class="tab" id="chatChannelsTab">Chats</div>
     </div>
     <div class="container">
         <div class="header">
@@ -765,6 +876,45 @@ select {
         </div>
     </div>
 
+    <div class="tab-content" id="content-chatChannelsTab">
+        <div class="chat-channels">
+            <h2>Chat Channels</h2>
+            <ul class="channel-list">
+                {% for chat in org.chat_channels.all %}
+                <li><a href="{% url 'view-chat' chat.id %}">{{chat.name}}</a></li>
+                <!-- Add more chat channels as needed -->
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="chat-container">
+            <h2 class="chat-label">Create a Chat</h2>
+            <form id="chat-form" action="" method="POST">
+                {% csrf_token %}
+                <label for="chat-name" class="chat-label">Chat Name:</label>
+                <input type="text" id="chat-name" name="chat-name" class="chat-input" required>
+    
+                <label for="description" class="chat-label">Description:</label>
+                <textarea id="description" name="description" class="chat-textarea" rows="4" required></textarea>
+    
+                <label for="rules" class="chat-label">Rules:</label>
+                <textarea id="rules" name="rules" class="chat-textarea" rows="4" required></textarea>
+    
+                <div class="player-checkbox">
+                    {% for p in org.members.all %}
+                        <div class="player-container">
+                            <img src="" alt="Player 1" class="player-image">
+                            <input type="checkbox" id="player1" name="{{p.id}}#PLAYER" class="player-checkbox">
+                            <label for="player1">{{ p.first_name }} {{ p.last_name}}</label>
+                        </div>
+                    {% endfor %}
+                    
+                </div>
+    
+                <button type="submit" class="chat-button" name="create-chat" value="Not-None">Create Chat</button>
+            </form>
+        </div>
+        
+    </div> 
 
 
 

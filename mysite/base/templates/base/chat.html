@@ -1,0 +1,104 @@
+{% extends 'main.html' %}
+
+
+{% block content %}
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.chat-container {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.chat-header h1 {
+    margin: 0 0 10px;
+}
+
+.chat-messages {
+    margin-bottom: 20px;
+}
+
+.message {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.username {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.message-input {
+    display: flex;
+}
+
+.message-input input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+    font-size: 16px;
+}
+
+.message-input button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.message-input button:hover {
+    background-color: #0056b3;
+}
+
+</style>
+<div class="chat-container">
+    <div class="chat-header">
+        <h1>{{chat.name}} Channel</h1>
+        <p>Description: {{chat.description}}</p>
+        <p>Rules: {{chat.rules}}</p>
+    </div>
+
+    <div class="chat-messages">
+        {% for m in chat.messages.all %}
+            <div class="message">
+                <img src="" alt="User1" class="user-avatar">
+                <div class="message-content">
+                    <span class="username">{{m.sent_by.first_name}} {{m.sent_by.last_name}}</span>
+                    <p>{{ m.content }}</p>
+                </div>
+            </div>
+        {% endfor %}
+        <!-- More messages go here -->
+    </div>
+
+    <div class="message-input">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input type="text" name="sent_message" laceholder="Type your message..." required>
+            <button type="submit">Send message</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

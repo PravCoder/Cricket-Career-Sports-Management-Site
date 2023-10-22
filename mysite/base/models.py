@@ -338,9 +338,12 @@ class Play(models.Model):
 
 class Chat(models.Model):
     name = models.CharField(max_length=200, null=True)
+    description = models.CharField(max_length=200, null=True)
+    rules = models.CharField(max_length=200, null=True)
     participants = models.ManyToManyField("Player", related_name="participants", blank=True)
     messages = models.ManyToManyField("Message", related_name="messages", blank=True)
 
 class Message(models.Model):
     content = models.CharField(max_length=200, null=True)
     sent_by = models.ForeignKey(Player,on_delete=models.SET_NULL,null=True,blank=True, related_name="sent_by")
+    date = models.CharField(max_length=200, null=True)

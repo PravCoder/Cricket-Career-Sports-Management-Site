@@ -17,6 +17,8 @@ urlpatterns = [
     
     path("pitch-conditions", views.pitch_conditions, name="pitch-conditions"),
 
+    path("chat/<str:pk>", views.view_chat, name="view-chat"),
+
     path("login/", views.login_page, name="login"),
     path("register/", views.register_page, name="register"),
     path("logout/", views.logout_user, name="logout"),
