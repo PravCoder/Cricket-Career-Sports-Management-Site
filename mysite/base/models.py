@@ -9,8 +9,9 @@ class Organization(models.Model): # Club
     date_established = models.DateTimeField(default=datetime.now, blank=True)
     location = models.CharField(max_length=200,null=True)
     games = models.ManyToManyField("Game", related_name="org_games", blank=True)
-
     teams = models.ManyToManyField("Team", related_name="org_teams", blank=True)
+
+    chat_channels = models.ManyToManyField("Chat", related_name="chat_channels", blank=True)
 
     @property
     def get_num_members(self):
@@ -334,3 +335,12 @@ class Play(models.Model):
     extra = models.BooleanField(default=False,null=True,blank=False) 
     extra_type = models.CharField(max_length=200,null=True)
 
+
+class Chat(models.Model):
+    name = models.CharField(max_length=200, null=True)
+    participants = models.ManyToManyField("Player", related_name="participants", blank=True)
+    messages = models.ManyToManyField("Message", related_name="messages", blank=True)
+
+class Message(models.Model):
+    content = models.CharField(max_length=200, null=True)
+    sent_by = models.ForeignKey(Player,on_delete=models.SET_NULL,null=True,blank=True, related_name="sent_by")
